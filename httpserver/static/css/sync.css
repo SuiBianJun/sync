@@ -1,0 +1,24 @@
+/* div满屏 */
+#page{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+/* 页头定位 */
+#header {
+    height: 10%;
+    width: 100%;
+}
+
+/* 页面主体定位 */
+#content {
+    height: 82%;
+    width: 100%;
+}
+
+/* 页脚定位 */
+/* #footer {
+
+} */

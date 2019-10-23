@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="/static/iview/iview.css">
+    <script type="text/javascript" src="/static/vue/vue.js"></script>
+    <script type="text/javascript" src="/static/iview/iview.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/sync.css">
+</head>
+<body>
+
+    <div id="page">
+        <div id="header">
+           <i-menu mode="horizontal" active-name="client">
+                <Submenu name="client">
+                    <template slot="title">
+                        <Icon type="stats-bars"></Icon>客户端
+                    </template>
+                    <Menu-Item name='client-config' @click.native='do_client_config'>配置</Menu-Item>
+                </Submenu>
+
+                <Submenu name="server">
+                    <template slot="title">
+                        <Icon type="stats-bars"></Icon>服务器
+                    </template>
+                    <Menu-Item name='server-config'>配置</Menu-Item>
+                </Submenu>
+           </i-menu>
+        </div>
+        <div id="content">
+
+        </div>
+        <div id='footer'>
+            <Divider />
+            <span style="text-align: center;">power by xx</span>
+        </div>
+    </div>
+   
+    
+</body>
+
+<script>
+
+    var vm = new Vue({
+        el: '#page',
+        data: {
+            msg: '首页'
+        },
+        methods: {
+            do_client_config(){
+                console.log("client config click");
+            }
+        },
+        components: {
+            'headercom': {
+                template: '#header-navi'
+            }
+        }
+    });
+
+</script>
+
+</html>
