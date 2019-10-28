@@ -13,54 +13,13 @@
 <body>
 
     <div id="page">
-        <div id="header">
-           <i-menu mode="horizontal" active-name="client">
-                <Submenu name="client">
-                    <template slot="title">
-                        <Icon type="stats-bars"></Icon>客户端
-                    </template>
-                    <Menu-Item name='client-config' @click.native='do_client_config'>配置</Menu-Item>
-                </Submenu>
-
-                <Submenu name="server">
-                    <template slot="title">
-                        <Icon type="stats-bars"></Icon>服务器
-                    </template>
-                    <Menu-Item name='server-config'>配置</Menu-Item>
-                </Submenu>
-           </i-menu>
-        </div>
-        <div id="content">
-
-        </div>
-        <div id='footer'>
+        <!-- <div id='footer'>
             <Divider />
             <span style="text-align: center;">power by xx</span>
-        </div>
+        </div> -->
     </div>
    
     
 </body>
-
-<script>
-
-    var vm = new Vue({
-        el: '#page',
-        data: {
-            msg: '首页'
-        },
-        methods: {
-            do_client_config(){
-                console.log("client config click");
-            }
-        },
-        components: {
-            'headercom': {
-                template: '#header-navi'
-            }
-        }
-    });
-
-</script>
 
 </html>
