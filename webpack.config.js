@@ -28,7 +28,7 @@ module.exports = {
 		rules: [
 			// test正则不要添加符号
 			{test: /\.css$/, use: ['style-loader', 'css-loader']},
-			{test: /\.(jpg|png)$/, use: ['url-loader?limit=3000&name=[hash:8]-[name].[ext]']},
+			{test: /\.(jpg|png|woff2|woff|ttf|svg)$/, use: ['url-loader?limit=3000&name=[hash:8]-[name].[ext]']},
 			{test: /\.js$/, use: ['babel-loader'], exclude: /node_modules/ },
 			{test: /\.vue$/, use: ['vue-loader']},
 		]
