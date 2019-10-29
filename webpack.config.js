@@ -5,17 +5,17 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
 	mode: 'development',
-	entry: './src/index.js',
+	entry: './src/login.js',
 	output: {
 		filename: 'bundle.js',
-		path: path.resolve(__dirname, 'dist'),
+		path: path.resolve(__dirname, 'httpservice/dist'),
 	},
 	plugins: [
 		// 热更新，只更新修改的部分，而不是整个文件
 		new webpack.HotModuleReplacementPlugin(),
 		new htmlWebpackPlugin({
 			// 指定打开的页面路径
-		  template: path.join(__dirname, './httpserver/html/home/home.html')
+		  template: path.join(__dirname, './httpserver/html/home/login.html')
 		}),
 		new VueLoaderPlugin()
 	  ],
