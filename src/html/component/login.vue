@@ -66,7 +66,7 @@ export default {
             })
             .then(function (response) {
                 console.log(response);
-                window.location.assign("/static/home/home.html");
+                window.location.assign("/static/html/home/home.html");
             })
             .catch(function (error) {
                 console.log(error);

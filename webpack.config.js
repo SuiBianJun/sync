@@ -22,7 +22,7 @@ module.exports = {
 		new webpack.HotModuleReplacementPlugin(),
 		//new CleanWebpackPlugin(),
 		new htmlWebpackPlugin({
-		  filename: 'html/login/login.html',
+		  filename: 'static/html/login/login.html',
 		  template: path.join(__dirname, 'src/html/login/login.html'),
 		  inject: 'body',
 		  minify: {
@@ -34,7 +34,7 @@ module.exports = {
 		// 多页面配置多个
 		new htmlWebpackPlugin({
 			// 指定打开的页面路径
-			filename: 'html/home/home.html',
+			filename: 'static/html/home/home.html',
 			template: path.join(__dirname, 'src/html/home/home.html'),
 			inject: 'body',
 			minify: {

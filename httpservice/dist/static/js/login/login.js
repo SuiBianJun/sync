@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "324de3522e44f8118557";
+/******/ 	var hotCurrentHash = "c7e6efe1a0d1f54e9d28";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1103,7 +1103,7 @@ eval("\n\nvar bind = __webpack_require__(/*! ./helpers/bind */ \"./node_modules/
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n    value: true\n});\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n\nexports.default = {\n    data: function data() {\n        return {\n            username: '',\n            password: ''\n        };\n    },\n    methods: {\n        register: function register() {\n            console.log('do register');\n            // oss账户注册\n            window.open('https://www.aliyun.com/product/oss/?lang=en');\n        },\n        login: function login() {\n            console.log('username: ' + this.username + \", password: \" + this.password);\n            this.axios.post('/user/login', {\n                username: this.username,\n                password: this.password\n            }).then(function (response) {\n                console.log(response);\n                window.location.assign(\"/static/home/home.html\");\n            }).catch(function (error) {\n                console.log(error);\n            });\n        }\n    }\n};\n\n//# sourceURL=webpack:///./src/html/component/login.vue?./node_modules/_babel-loader@7.1.5@babel-loader/lib!./node_modules/_vue-loader@15.7.1@vue-loader/lib??vue-loader-options");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n    value: true\n});\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n\nexports.default = {\n    data: function data() {\n        return {\n            username: '',\n            password: ''\n        };\n    },\n    methods: {\n        register: function register() {\n            console.log('do register');\n            // oss账户注册\n            window.open('https://www.aliyun.com/product/oss/?lang=en');\n        },\n        login: function login() {\n            console.log('username: ' + this.username + \", password: \" + this.password);\n            this.axios.post('/user/login', {\n                username: this.username,\n                password: this.password\n            }).then(function (response) {\n                console.log(response);\n                window.location.assign(\"/static/html/home/home.html\");\n            }).catch(function (error) {\n                console.log(error);\n            });\n        }\n    }\n};\n\n//# sourceURL=webpack:///./src/html/component/login.vue?./node_modules/_babel-loader@7.1.5@babel-loader/lib!./node_modules/_vue-loader@15.7.1@vue-loader/lib??vue-loader-options");
 
 /***/ }),
 
