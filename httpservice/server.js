@@ -14,7 +14,15 @@ sync_http_server.prototype = {
     }
 }
 
-app.use('/static', express.static(__dirname + '/dist'));
+app.use('/static', express.static(__dirname + '/dist/html'));
+app.use('/static/js', express.static(__dirname + '/dist/static/js'));
+app.use('/static/fonts', express.static(__dirname + '/dist/static/fonts'));
+
+app.get("/favicon.ico", function(req, resp){
+    fs.readFile(__dirname + "favicon.ico", function(err, data){
+        resp.send("aa".toString());
+    });
+});
 
 app.use("/", router);
 
