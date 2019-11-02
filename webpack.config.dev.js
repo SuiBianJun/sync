@@ -16,12 +16,12 @@ module.exports = {
 	output: {
 		// name对应entry中的 key
 		filename: '[name].js',
-		path: path.resolve(__dirname, 'httpservice/dist'),
+		path: path.resolve(__dirname, 'dist'),
 	},
 	plugins: [
 		// 热更新，只更新修改的部分，而不是整个文件
 		new webpack.HotModuleReplacementPlugin(),
-		new CleanWebpackPlugin(),
+		//new CleanWebpackPlugin(),
 		new htmlWebpackPlugin({
 		  filename: 'static/html/login/login.html',
 		  template: path.join(__dirname, 'src/html/login/login.html'),
@@ -44,12 +44,15 @@ module.exports = {
 			chunks: ['static/js/home/home']
 		}),
 		new VueLoaderPlugin(),
-		new ExtractTextPlugin("static/css/styles.css"),//打包后的css文件名
+		new ExtractTextPlugin("static/css/styles.css", {
+			allChunks: true
+		}),//打包后的css文件名
 	  ],
 	devServer: {
-		contentBase: './dist/html',
+		contentBase: './dist/static/html',
 		hot: true,
-		port: 3000
+		port: 3000,
+		watchContentBase: true,
 	},
 	module: {
 		rules: [
@@ -70,7 +73,7 @@ module.exports = {
 				  options: {
 					name: "[name]-[hash:5].[ext]",
 					limit: 5000, // fonts file size <= 5KB, use 'base64'; else, output svg file
-					publicPath: "/static/fonts",// 引用的位置,,dev-server中使用相对位置，，部署时要使用绝对位置
+					publicPath: "../../static/fonts",// 引用的位置,,dev-server中使用相对位置，，部署时要使用绝对位置
 					outputPath: "static/fonts/"
 				  }
 				}

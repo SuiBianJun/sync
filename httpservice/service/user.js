@@ -7,6 +7,8 @@ router.post("/login", function(req, resp){
     //resp.redirect('/login');
     resp.send('user.html');
 
+    // 登录成功，创建对应用户Id的配置文件夹
+
 });
 
 module.exports = router;

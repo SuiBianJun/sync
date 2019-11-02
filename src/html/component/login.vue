@@ -3,10 +3,15 @@
     <div id="panel">
         <div id="center">
             <div>
-                <Input v-model="username" placeholder="用户名" style="width: 300px;" />
+                <Select v-model="region" filterable>
+                    <Option v-for="item in regionList" :value="item" :key="item">{{ item }}</Option>
+                </Select>
             </div>
-            <div class='passwd'>
-                <Input v-model="password" placeholder="密码" style="width: 300px;" />
+            <div class='acckeyid'>
+                <Input v-model="accessKeyId" placeholder="Your accessKeyId" style="width: 300px;" />
+            </div>
+            <div class='acckeysec'>
+                <Input v-model="accessKeySecret" placeholder="Your accessKeySecret" style="width: 300px;" />
             </div>
             <div class="login-register">
                 <Button type="primary" shape="circle" @click="login()">登录</Button>
@@ -16,40 +21,14 @@
     </div>
 </template>
 
-<style scoped>
-
-#panel {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: gainsboro;
-}
-#center {
-    position: absolute;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 40%;
-    width: 300px;
-}
-.passwd {
-    margin-top: 7px;
-}
-
-.login-register {
-    margin-top: 10px;
-}
-</style>
-
 <script>
 export default {
     data: function(){
         return{
-            username: '',
-            password: ''
+            region: '',
+            accessKeyId: '',
+            accessKeySecret: '',
+            regionList: ['oss-cn-shenzhen']
         };
     },
     methods: {
@@ -59,7 +38,7 @@ export default {
             window.open('https://www.aliyun.com/product/oss/?lang=en');
         },
         login(){
-            console.log('username: ' + this.username + ", password: " + this.password);
+            console.log('region: ' + this.region + ' accessKeySecret: ' + this.accessKeySecret + ", accessKeySecret: " + this.accessKeySecret);
             this.axios.post('/user/login', {
                 username: this.username,
                 password: this.password
@@ -68,8 +47,15 @@ export default {
                 console.log(response);
                 window.location.assign("/static/html/home/home.html");
             })
-            .catch(function (error) {
-                console.log(error);
+            .catch((err) => {
+                console.log("连接错误");
+                this.error("登录提示", "网络连接错误");
+            });
+        },
+        error: function(title, msg){
+            this.$Notice.open({
+                title: title,
+                desc: msg
             });
         }
     },
