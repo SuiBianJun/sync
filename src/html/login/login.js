@@ -6,13 +6,20 @@ import VueAxios from 'vue-axios'
 
 // 自定义组件
 import login from '../component/login.vue'
+
+import notify from '../js/notification'
  
-Vue.use(VueAxios, axios)
+Vue.use(VueAxios, axios);
 Vue.use(ViewUI);
 
 var vm = new Vue({
     el: "#login",
     components: {
         login
-    }
+    },
+    methods: {
+        error(title, msg){
+            notify.requestError(this, title, msg);
+        }
+    },
 });

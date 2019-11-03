@@ -4,8 +4,6 @@ import Vue from 'vue/dist/vue.js'
 import ViewUI from 'view-design';
 import 'view-design/dist/styles/iview.css';
 import VueRouter from 'vue-router'
-import axios from 'axios'
-import VueAxios from 'vue-axios'
 
 import '../../static/css/sync.css'
 import inavi from '../component/home.vue'
@@ -13,13 +11,20 @@ import menuClient from '../component/menu-client.vue'
 import menuServer from '../component/menu-server.vue'
 import menuSetting from '../component/menu-setting.vue'
 
+import notify from '../js/notification'
+
 // 引入iview的组件
 Vue.use(ViewUI);
 Vue.use(VueRouter);
-Vue.use(VueAxios, axios);
 
 var router = new VueRouter({
     routes: [
+        {
+            path: '/',
+            components: {
+                menuLeft: menuClient
+            }
+        },
         {
             path: '/menuclient',
             components: {
@@ -67,6 +72,9 @@ var vm = new Vue({
                     router.push({path: '/menusetting'});
                 }
             }
+        },
+        error(title, msg){
+            notify.requestError(this, title, msg);
         }
     },
     components: {

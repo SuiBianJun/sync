@@ -40,22 +40,23 @@ export default {
         login(){
             console.log('region: ' + this.region + ' accessKeySecret: ' + this.accessKeySecret + ", accessKeySecret: " + this.accessKeySecret);
             this.axios.post('/user/login', {
-                username: this.username,
-                password: this.password
+                region: this.region,
+                accessKeyId: this.accessKeyId,
+                accessKeySecret: this.accessKeySecret
             })
             .then(function (response) {
+
+                // 登录成功
+
+                // 设置token
+
                 console.log(response);
                 window.location.assign("/static/html/home/home.html");
             })
             .catch((err) => {
                 console.log("连接错误");
-                this.error("登录提示", "网络连接错误");
-            });
-        },
-        error: function(title, msg){
-            this.$Notice.open({
-                title: title,
-                desc: msg
+                //this.error("登录提示", "网络连接错误");
+                this.$parent.error("登录提示", "网络连接错误");
             });
         }
     },

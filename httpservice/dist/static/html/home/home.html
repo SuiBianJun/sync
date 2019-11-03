@@ -9,10 +9,18 @@
 <body>
     <div id="page">
         <inavi class="header"></inavi>
-        <div id="content"></div>
-        <divider>
+        <div id="content">
+            <div id="menu-content">
+                <router-view name="menuLeft"></router-view>
+            </div>
+            <div id="right-content">
+
+            </div>
+        </div>
+        <!-- <Divider /> -->
         <div id="footer">
-            <span style="text-align: center;">power by xx</span>
+                power by suibianjun
+            <!-- <span style="text-align: center; ">power by xx</span> -->
         </div>
     </div>
 </body></html><script type="text/javascript" src="../../../static/js/home/home.js"></script>
