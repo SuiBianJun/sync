@@ -32,10 +32,10 @@ import axiosToken from '../js/axiosToken.js'
             // 获取[我的同步文件夹]目录
             getAllSyncDir(){
 
-                localStorage.setItem("accesstoken", "test");
+                //localStorage.setItem("accesstoken", "test");
 
                 axiosToken.get('/client/syncdir/list', {
-                    accessId: "test"
+                    //accessId: "test"
                 })
                 .then((response) => {
                     console.log(response);
