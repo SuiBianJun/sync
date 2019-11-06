@@ -6,7 +6,7 @@ var stringRandom = require('string-random');
 var dirUtils = require('../sync/utils/dirutils');
 var ServerResponse = require("../entity/serverResponse");
 
-var commonFunction = require('../sync/utils/functions');
+var functions = require('../sync/utils/functions');
 
 router.post("/login", function(req, resp){
 
@@ -26,13 +26,10 @@ router.post("/login", function(req, resp){
         token: tokenStr
     }
     // 写token到文件
-    commonFunction.writeToken2File(token);
+    functions.writeToken2File(token);
     // 返回token
     resp.header("accesstoken", token.token);
     resp.send(new ServerResponse().ok());
-
-
-
 });
 
 module.exports = router;

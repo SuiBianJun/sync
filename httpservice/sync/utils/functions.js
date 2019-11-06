@@ -26,6 +26,77 @@ CommonFunction.prototype = {
             });
 
         });
+    },
+    // token检查
+    checkTokenExpire(token, callBack){
+        if("" == token){
+            return false;
+        }
+        common.fs.readFile(common.path.resolve(__dirname, "../database/token.json"), {encoding: "utf-8"}, (err, data) => {
+            if(err){
+                console.log(err);
+            }
+            var tokens = {};
+            var flag = 1;
+            if(data.length > 0){
+                tokens = JSON.parse(data);
+                for(var user in tokens){
+                    if(tokens[user].token == token){
+                        flag = 0;
+                        if(new Date().getTime() > tokens[user].expire){
+                            // token过期
+                            callBack(false);
+                        }else{
+                            callBack(true);
+                        }
+                    }
+                }
+                if(flag){
+                    // 无token记录
+                    callBack(false);
+                }
+            }else{
+                // 无登录记录
+                callBack(false);
+            }
+        });
+    },
+    getUserSyncDirInfo(token, callBack){
+        common.fs.readFile(common.path.resolve(__dirname, "../database/token.json"), {encoding: "utf-8"}, (err, data) => {
+            if(err){
+                console.log(err);
+            }
+            var tokens = {};
+            var userId = '';
+            if(data.length > 0){
+                tokens = JSON.parse(data);
+
+                for(var user in tokens){
+                    if(tokens[user].token == token){
+                        userId = user;
+                        break;
+                    }
+                }
+                // 根据userId获取对应配置
+                common.fs.readFile(common.path.resolve(__dirname, "../config/" + userId + "/client/client.json"), {encoding: "utf-8"}, (err, data) => {
+                    if(err){
+                        console.log(err);
+                    }
+                    var config = {};
+                    if(data.length > 0){
+                        config = JSON.parse(data);
+                        console.log(config);
+                        callBack(config.client);
+                    }else{
+                        // 配置错误
+                    }
+
+                });
+            }else{
+                // 配置文件错误
+            }
+
+        });
     }
 }
 

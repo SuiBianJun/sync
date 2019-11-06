@@ -6,6 +6,7 @@ var router = require('./router/router');
 
 var app = express();
 var ServerResponse = require('./entity/serverResponse');
+var functions = require('./sync/utils/functions'); 
 
 // post数据解析中间件
 app.use(bodyParser.json());
@@ -40,16 +41,24 @@ app.use("/", function(req, resp, next){
 
     console.log("url: " + req.url);
 
+    // 不用检查token
     if(req.url == "/user/login"){
-        next();
+        console.log("pass");
+    }else{
+        // 检查token
+        var token = req.header("AccessToken");
+        // 检查token是否过期
+        console.log("token: " + token);
+        functions.checkTokenExpire(token, function(result){
+            // token失效
+            if(!result){
+                console.log("redirect");
+                resp.send(new ServerResponse().redirect({location: "/static/html/login/login.html"}));
+                resp.end();
+                return;
+            }
+        });
     }
-    // var token = req.header("AccessToken");
-    // if(token == ""){
-    //     resp.send(new ServerResponse().redirect({location: "/static/html/login/login.html"}));
-    //     resp.end();
-    //     return;
-    // }
-
     next();
 });
 
