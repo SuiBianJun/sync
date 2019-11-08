@@ -11,6 +11,7 @@ module.exports = {
 	entry: {
 		'static/js/login/login': './src/html/login/login.js',
 		'static/js/home/home': './src/html/home/home.js',
+		'static/js/dirtree/dirtree': './src/html/dirtree/dirtree.js'
 		
 	},
 	output: {
@@ -42,6 +43,15 @@ module.exports = {
   
 			},
 			chunks: ['static/js/home/home']
+		}),
+		new htmlWebpackPlugin({
+			filename: 'static/html/dirtree/dirtree.html',
+			template: path.join(__dirname, 'src/html/dirtree/dirtree.html'),
+			inject: 'body',
+			minify: {
+  
+			},
+			chunks: ['static/js/dirtree/dirtree']
 		}),
 		new VueLoaderPlugin(),
 		new ExtractTextPlugin("static/css/styles.css", {

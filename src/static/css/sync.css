@@ -104,3 +104,11 @@
     text-decoration: none;
     color: black;
 }
+
+/* dir-tree.vue */
+ #dirtree {
+    width: 500px;
+    height: 500px;
+    margin-left: 200px;
+    margin-top: 100px;
+ }
