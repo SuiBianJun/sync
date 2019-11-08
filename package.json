@@ -8,7 +8,7 @@
     "build": "webpack",
     "server": "webpack-dev-server --watch --hot --open",
     "dev-build": "webpack --config webpack.config.dev.js",
-    "dev-server": "webpack-dev-server --config webpack.config.dev.js --watch --hot --open"
+    "dev-server": "webpack-dev-server --config webpack.config.dev.js --watch --hot --progress --open chrome"
   },
   "author": "dlg",
   "license": "ISC",

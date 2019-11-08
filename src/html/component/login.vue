@@ -15,7 +15,8 @@
             </div>
             <div class="login-register">
                 <Button type="primary" shape="circle" @click="login()">登录</Button>
-                <Button type="primary" shape="circle" @click="register()">注册</Button>
+                <!-- <Button type="primary" shape="circle" @click="register()">注册</Button> -->
+                <tooltip></tooltip>
             </div>
         </div>
     </div>
@@ -23,6 +24,9 @@
 
 <script>
 import axiosToken from '../js/axiosToken.js'
+
+import tooltip from './tooltip.vue'
+
 export default {
     data: function(){
         return{
@@ -61,5 +65,8 @@ export default {
             });
         }
     },
+    components: {
+        tooltip
+    }
 }
 </script>
