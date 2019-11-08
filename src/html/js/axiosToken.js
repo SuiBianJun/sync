@@ -22,6 +22,8 @@ instance.interceptors.request.use(function(config){
 });
 
 instance.interceptors.response.use(function(res){
+    console.log("add response token");
+    console.log("get response token: " + res.headers.accesstoken);
     if(res.headers.accesstoken){
         localStorage.setItem('accesstoken',res.headers.accesstoken);
     }

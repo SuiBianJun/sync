@@ -10,6 +10,7 @@ import inavi from '../component/home.vue'
 import menuClient from '../component/menu-client.vue'
 import menuServer from '../component/menu-server.vue'
 import menuSetting from '../component/menu-setting.vue'
+import syncDir from '../component/my-sync-dir.vue'
 
 import notify from '../js/notification'
 
@@ -29,7 +30,16 @@ var router = new VueRouter({
             path: '/menuclient',
             components: {
                 menuLeft: menuClient
-            }
+            },
+            children: [
+                {
+                    name: 'menuclientcontent',
+                    path: 'content',
+                    components: {
+                        rightContent: syncDir
+                    }
+                }
+            ]
         },
         {
             path: '/menuserver',
@@ -42,7 +52,7 @@ var router = new VueRouter({
             components: {
                 menuLeft: menuSetting
             }
-        }
+        },
     ]
 });
 
@@ -75,6 +85,9 @@ var vm = new Vue({
         },
         error(title, msg){
             notify.requestError(this, title, msg);
+        },
+        changeRouter(r){
+            router.push(r);
         }
     },
     components: {

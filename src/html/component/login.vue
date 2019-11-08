@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import axiosToken from '../js/axiosToken.js'
 export default {
     data: function(){
         return{
@@ -39,7 +40,7 @@ export default {
         },
         login(){
             console.log('region: ' + this.region + ' accessKeySecret: ' + this.accessKeySecret + ", accessKeySecret: " + this.accessKeySecret);
-            this.axios.post('/user/login', {
+            axiosToken.post('/user/login', {
                 region: this.region,
                 accessKeyId: this.accessKeyId,
                 accessKeySecret: this.accessKeySecret

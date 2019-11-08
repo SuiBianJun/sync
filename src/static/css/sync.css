@@ -23,11 +23,12 @@
 
 #menu-content {
     height: 100%;
-    
+    width: 15%;
 }
 
 #right-content {
     height: 100%;
+    width: 85%;
 }
 
 /* 页脚定位 */

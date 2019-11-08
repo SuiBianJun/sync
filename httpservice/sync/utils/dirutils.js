@@ -1,6 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 
+var configdb = require('../database/configdb');
+
 var configDir = '../config/';
 
 var DirUtil = function(){
@@ -13,9 +15,9 @@ DirUtil.prototype = {
             var hasUserDir = false;
             files.forEach(function(file){
                 if(file.isDirectory){
-                    console.log("dir: " + file.name);
                     if(accessKeyId == file.name){
                         // 存在用户目录
+                        console.log("用户目录已存在：" + file.name);
                         hasUserDir = true;
                     }
                 }
@@ -23,9 +25,18 @@ DirUtil.prototype = {
 
             if(!hasUserDir){
                 // 创建用户目录
-                fs.mkdir(path.resolve(__dirname, configDir + accessKeyId), { recursive: true }, (err) => {
+                fs.mkdir(path.resolve(__dirname, configDir + accessKeyId + "/client/"), {recursive: true}, (err) => {
                     if(err)
                         console.log(err);
+                    console.log("用户配置文件夹创建成功");
+                    var client = {
+                        client: []
+                    };
+                    fs.writeFile(path.resolve(__dirname, configDir + accessKeyId + "/client/client.json"), JSON.stringify(client), "utf-8", (err) => {
+                        if(err)
+                            console.log(err);
+                        console.log("用户配置文件创建成功");
+                    });
                 });
             }
         });
