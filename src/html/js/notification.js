@@ -16,6 +16,12 @@ notify.prototype = {
             title: "xx",
             desc: "xx"
         });
+    },
+    normalNotification: function(target, title, msg){
+        target.$Notice.open({
+            title: title,
+            desc: msg
+        });
     }
 }
 export default new notify()

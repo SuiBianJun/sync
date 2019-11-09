@@ -3,64 +3,15 @@
 import Vue from 'vue/dist/vue.js'
 import ViewUI from 'view-design';
 import 'view-design/dist/styles/iview.css';
-import VueRouter from 'vue-router'
 
 import '../../static/css/sync.css'
 import inavi from '../component/home.vue'
-import menuClient from '../component/menu-client.vue'
-import menuServer from '../component/menu-server.vue'
-import menuSetting from '../component/menu-setting.vue'
-import syncDir from '../component/my-sync-dir.vue'
-
 import notify from '../js/notification'
+import router from '../js/router'
+import menuClient from '../component/menu-client.vue'
 
 // 引入iview的组件
 Vue.use(ViewUI);
-Vue.use(VueRouter);
-
-var router = new VueRouter({
-    routes: [
-        {
-            path: '/',
-            components: {
-                menuLeft: menuClient
-            }
-        },
-        {
-            path: '/menuclient',
-            components: {
-                menuLeft: menuClient
-            },
-            children: [
-                {
-                    name: 'menuclientcontent',
-                    path: 'content',
-                    components: {
-                        rightContent: syncDir
-                    }
-                }
-            ]
-        },
-        {
-            path: '/menuserver',
-            components: {
-                menuLeft: menuServer
-            }
-        },
-        {
-            path: '/menusetting',
-            components: {
-                menuLeft: menuSetting
-            }
-        },
-    ]
-});
-
-// router not allow
-const routerPush = VueRouter.prototype.push
-VueRouter.prototype.push = function push(location) {
-  return routerPush.call(this, location).catch(error=> error)
-}
 
 var vm = new Vue({
 
@@ -73,7 +24,7 @@ var vm = new Vue({
         contentmenuchange(menuname){
             switch(menuname){
                 case 'client': {
-                    router.push({path: '/menuclient'});
+                    router.push({path: '/menuclient/content'});
                 }break;
                 case 'server': {
                     router.push({path: '/menuserver'});
@@ -100,4 +51,4 @@ var vm = new Vue({
     },
 });
 
-router.push({path: '/menuClient'});
+router.push({path: '/menuClient/content'});

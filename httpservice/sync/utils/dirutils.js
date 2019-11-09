@@ -112,42 +112,29 @@ DirUtil.prototype = {
         // };
         //var tmpPath = "E:\\vscode_workspace\\html";
         var tmpPath = "E:\\syncDir";
-        this.parseDir(tmpPath, dirData, 0);
-
-        console.log(dirData);
+        this.parseDir(tmpPath, dirData);
+        //console.log(dirData[0].dirs[1].dirs);
+        
+        return {
+            name: path,
+            dirs: dirData
+        };
     },
-    parseDir(path, tempData, dirs){
+    parseDir(path, tempData){
         var item = {};
-        fs.readdir(path, {withFileTypes: true}, function(err, files){
-            for(var i = 0; i < files.length; i++){
-                if(files[i].isDirectory()){// 加函数调用的() 才是正确的
-                    //dirData[i]
-                    item.type = 1,
-                    item.name = files[i].name;
-                    item.dirs = [];
-
-                    if(dirs == 1){
-                        if(tempData.dirs == undefined){
-                            tempData.dirs = [];
-                        }
-                        tempData.dirs.push(item);
-                    }else{
-                        dirData.push(item);
-                    }
-
-                    //console.log("dir: " + files[i].name);
-                }else{
-                    //console.log("file: " + files[i].name);
-                    item.type = 1,
-                    item.name = files[i].name;
-                    dirData.push(item);
-                }
-            }
-        });
-
-        for(var i = 0; i < dirData.length; i++){
-            if(dirData[i].type == 1){
-                this.parseDir(files[i], tempData[i], 1);
+        var files = fs.readdirSync(path, {withFileTypes: true});// 同步方式读取文件夹
+        for(var i = 0; i < files.length; i++){
+            item = {};// 重要，，否则其他过程会影响
+            if(files[i].isDirectory()){
+                item.type = 1,
+                item.name = files[i].name;
+                item.dirs = [];
+                tempData.push(item);
+                this.parseDir(path + "/" + files[i].name, tempData[i].dirs);
+            }else{
+                item.type = 0,
+                item.name = files[i].name;
+                tempData.push(item);
             }
         }
     }
