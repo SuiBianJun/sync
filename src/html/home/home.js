@@ -51,4 +51,4 @@ var vm = new Vue({
     },
 });
 
-router.push({path: '/menuClient/content'});
+router.push({path: '/menuClient/syncdirinfo'});

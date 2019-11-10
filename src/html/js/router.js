@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import menuClient from '../component/menu-client.vue'
 import menuServer from '../component/menu-server.vue'
 import menuSetting from '../component/menu-setting.vue'
+import syncDirInfo from '../component/my-sync-dir-info.vue'
 import syncDir from '../component/my-sync-dir.vue'
 
 Vue.use(VueRouter);
@@ -23,8 +24,15 @@ var router = new VueRouter({
             },
             children: [
                 {
-                    name: 'menuclientcontent',
-                    path: 'content',
+                    name: 'menuclientcsyncdirinfo',
+                    path: 'syncdirinfo',
+                    components: {
+                        rightContent: syncDirInfo
+                    }
+                },
+                {
+                    name: 'menuclientcontentsyncdir',
+                    path: 'syncDir',
                     components: {
                         rightContent: syncDir
                     }

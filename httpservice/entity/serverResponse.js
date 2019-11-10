@@ -1,7 +1,8 @@
 // 服务器错误处理
 
-var ServerResponse = function(){
-
+var ServerResponse = function(code, msg){
+    this.code = code;
+    this.msg = msg;
 }
 
 ServerResponse.prototype = {
@@ -12,9 +13,9 @@ ServerResponse.prototype = {
             this.data = data;
         return JSON.stringify(this);
     },
-    failed(data=null){
+    failed(data=null, msg="操作失败"){
         this.code = 1;
-        this.msg = "操作失败";
+        this.msg = msg;
         if(data != null)
             this.data = data;
         return JSON.stringify(this);

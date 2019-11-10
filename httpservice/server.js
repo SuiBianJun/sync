@@ -44,22 +44,25 @@ app.use("/", function(req, resp, next){
     // 不用检查token
     if(req.url == "/user/login"){
         console.log("pass");
+        next();
     }else{
         // 检查token
         var token = req.header("AccessToken");
         // 检查token是否过期
         console.log("token: " + token);
-        functions.checkTokenExpire(token, function(result){
+        functions.checkTokenExpire(token, (result) => {
             // token失效
             if(!result){
                 console.log("redirect");
                 resp.send(new ServerResponse().redirect({location: "/static/html/login/login.html"}));
                 resp.end();
                 return;
+            }else{
+                next();
             }
         });
     }
-    next();
+    //next();
 });
 
 app.use("/", router);

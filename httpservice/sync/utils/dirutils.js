@@ -3,6 +3,7 @@ var path = require('path');
 
 var configdb = require('../database/configdb');
 
+var tokenFilePath = '../database/token.json';
 var configDir = '../config/';
 
 var dirData = [];
@@ -137,9 +138,59 @@ DirUtil.prototype = {
                 tempData.push(item);
             }
         }
+    },
+    checkDirAvailable(path){// 检查文件夹是否可用
+        try {
+            fs.readdirSync(path);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    },
+    addSyncDir(token, syncpath){
+        // 根据token获取用户名
+        var userName = this.getUserNameByToken(token);
+        var client;
+        if(userName == ''){
+            // 该用户不存在
+        }else{
+            // 写配置到用户配置文件
+            var result = fs.readFileSync(path.resolve(__dirname, configDir + userName + "/client/client.json"), {encoding: 'utf-8'});
+            client = JSON.parse(result);
+
+            var item = {};
+            item.local_path = syncpath;
+            item.bucket_name = '';
+            item.synced = '0';
+            item.md5_path = '';
+
+            client.client.push(item);
+
+            fs.writeFile(path.resolve(__dirname, configDir + userName + "/client/client.json"), JSON.stringify(client), "utf-8", (err) => {
+                if(err)
+                    console.log(err);
+                console.log("用户同步文件夹添加成功");
+            });
+        }
+    },
+    getUserNameByToken(token){
+        var result = fs.readFileSync(path.resolve(__dirname, tokenFilePath), {encoding: 'utf-8'});
+        var data;
+        if(result.length < 1){
+            return '';
+        }else{
+            data = JSON.parse(result);
+            for(var user in data){
+                if(data[user].token == token){
+                    return user;
+                }
+            }
+        }
+        return '';
     }
 }
 
 //new DirUtil().createUserConfigDir("test");
-new DirUtil().parseSyncDir("");
-//module.exports = new DirUtil()
+//new DirUtil().parseSyncDir("");
+//console.log(new DirUtil().checkDirAvailable("a"));
+module.exports = new DirUtil()
