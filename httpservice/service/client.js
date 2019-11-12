@@ -6,7 +6,7 @@ var ServerResponse = require('../entity/serverResponse');
 var functions = require('../sync/utils/functions');
 var dirutils = require('../sync/utils/dirutils');
 
-router.get("/syncdir/list", function(req, resp){// 列出用户同步文件夹
+router.get("/syncdir/list", function(req, resp){// 列出用户同步文件夹，只有同步文件夹的信息
 
     // 获取client配置信息
     //var data = functions.getUserSyncDirInfo(req.header("AccessToken"));
@@ -18,6 +18,10 @@ router.get("/syncdir/list", function(req, resp){// 列出用户同步文件夹
         return;
     })
     // 登录成功，创建对应用户Id的配置文件夹
+
+});
+
+router.get("/syncdir/content", function(req, resp){// 列出用户同步文件夹内容
 
 });
 
@@ -37,6 +41,8 @@ router.post("/syncdir/add", function(req, resp){// 添加同步文件夹
     // 添加到配置文件中
 
     dirutils.addSyncDir(token, path);
+
+    // 添加成功，更新MD5文件内容
 
     resp.send(new ServerResponse().ok());
     resp.end();
