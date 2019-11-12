@@ -114,6 +114,10 @@
     margin-top: 100px;
  }
 
+ #dirtree span:hover {
+     background-color: gainsboro;
+ }
+
 /* my-sync-dir.vue */
 .empty-sync-dir {
      width: 100%;

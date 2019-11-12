@@ -1,6 +1,15 @@
 <template>
     <div id="dirtree">
         <Tree :data="data1"></Tree>
+        <hr>
+        <Tree :data="data2"></Tree>
+        <hr>
+        <Tree :data="data3" show-checkbox multiple></Tree>
+        <Modal v-model="modalFlag" title="请稍等" :mask-closable="false">
+            <div>
+                xx文件上传中...
+            </div>
+        </Modal>
     </div>
 </template>
 
@@ -43,10 +52,419 @@ export default {
                     title: 'parent 2'
                 }
             ],
-            dirTree: []
+            dirTree: [],
+            data2: [
+                {
+                    title: 'parent 1',
+                    expand: true,
+                    render: (h, { root, node, data }) => {
+                        return h('span', {
+                            style: {
+                                display: 'inline-block',
+                                width: '100%'
+                            }
+                        }, [
+                            h('span', [
+                                h('Icon', {
+                                    props: {
+                                        type: 'ios-folder'
+                                    },
+                                    style: {
+                                        marginRight: '8px'
+                                    }
+                                }),
+                                h('span', data.title)
+                            ]),
+                            h('span', {
+                                style: {
+                                    display: 'inline-block',
+                                    float: 'right',
+                                    marginRight: '32px'
+                                }
+                            }, [
+                                h('Button', {
+                                    props: Object.assign({}, this.buttonProps, {
+                                        icon: 'md-cloud-download'
+                                    }),
+                                    style: {
+                                        marginRight: '8px'
+                                    },
+                                    attrs: {
+                                        title: '下载所有'
+                                    },
+                                    on: {
+                                        click: () => { this.append(data) }
+                                    }
+                                }),
+                                h('Button', {
+                                    props: Object.assign({}, this.buttonProps, {
+                                        icon: 'md-cloud-upload'
+                                    }),
+                                    style: {
+                                        marginRight: '8px'
+                                    },
+                                    on: {
+                                        click: () => { this.append(data) }
+                                    }
+                                }),
+                                h('Button', {
+                                    props: Object.assign({}, this.buttonProps, {
+                                        icon: 'md-sync'
+                                    }),
+                                    style: {
+                                        marginRight: '8px'
+                                    },
+                                    on: {
+                                        click: () => { this.append(data) }
+                                    }
+                                })
+                            ]),
+                        ]);
+                    },
+                    children: [
+                        {
+                            title: 'child 1-1',
+                            expand: true,
+                            render: (h, { root, node, data }) => {
+                                return h('span', {
+                                    style: {
+                                        display: 'inline-block',
+                                        width: '100%'
+                                    }
+                                }, [
+                                    h('span', [
+                                        h('Icon', {
+                                            props: {
+                                                type: 'ios-folder-outline'
+                                            },
+                                            style: {
+                                                marginRight: '8px'
+                                            }
+                                        }),
+                                        h('span', data.title)
+                                    ])
+                                ]);
+                            },
+                            children: [
+                                {
+                                    title: 'leaf 1-1-1',
+                                    expand: true,
+                                    render: (h, { root, node, data }) => {
+                                        return h('span', {
+                                            style: {
+                                                display: 'inline-block',
+                                                width: '100%'
+                                            }
+                                        }, [
+                                            h('span', [
+                                                h('Icon', {
+                                                    props: {
+                                                        type: 'ios-document-outline',
+                                                        color: 'red'
+                                                    },
+                                                    style: {
+                                                        marginRight: '8px'
+                                                    }
+                                                }),
+                                                h('span', data.title)
+                                            ]),
+                                            h('span', {
+                                                style: {
+                                                    display: 'inline-block',
+                                                    float: 'right',
+                                                    marginRight: '32px'
+                                                }
+                                            }, [
+                                                h('Button', {
+                                                    props: Object.assign({}, this.buttonProps, {
+                                                        icon: 'md-cloud-download'
+                                                    }),
+                                                    style: {
+                                                        marginRight: '8px'
+                                                    },
+                                                    on: {
+                                                        click: () => { this.append(data) }
+                                                    }
+                                                })
+                                            ])
+                                        ]);
+                                    },
+
+                                },
+                                {
+                                    title: 'leaf 1-1-2',
+                                    expand: true,
+                                    render: (h, { root, node, data }) => {
+                                        return h('span', {
+                                            style: {
+                                                display: 'inline-block',
+                                                width: '100%'
+                                            }
+                                        }, [
+                                            h('span', [
+                                                h('Icon', {
+                                                    props: {
+                                                        type: 'ios-paper-outline'
+                                                    },
+                                                    style: {
+                                                        marginRight: '8px'
+                                                    }
+                                                }),
+                                                h('span', data.title)
+                                            ]),
+                                            h('span', {
+                                                style: {
+                                                    display: 'inline-block',
+                                                    float: 'right',
+                                                    marginRight: '32px'
+                                                }
+                                            }, [
+                                                h('Icon', {
+                                                    props: Object.assign({}, {
+                                                        type: 'md-cloud-done',
+                                                        size: 22,
+                                                        color: 'green'
+                                                    }, {
+                                                    }),
+                                                    style: {
+                                                        marginRight: '8px'
+                                                    },
+                                                    on: {
+                                                        click: () => { console.log('done') }
+                                                    }
+                                                })
+                                            ])
+                                        ]);
+                                    },
+                                }
+                            ]
+                        },
+                        {
+                            title: 'child 1-2',
+                            expand: true,
+                            render: (h, { root, node, data }) => {
+                                return h('span', {
+                                    style: {
+                                        display: 'inline-block',
+                                        width: '100%'
+                                    }
+                                }, [
+                                    h('span', [
+                                        h('Icon', {
+                                            props: {
+                                                type: 'ios-folder-outline'
+                                            },
+                                            style: {
+                                                marginRight: '8px'
+                                            }
+                                        }),
+                                        h('span', data.title)
+                                    ])
+                                ]);
+                            },
+                            children: [
+                                {
+                                    title: 'leaf 1-2-1',
+                                    expand: true,
+                                    render: (h, { root, node, data }) => {
+                                        return h('span', {
+                                            style: {
+                                                display: 'inline-block',
+                                                width: '100%'
+                                            }
+                                        }, [
+                                            h('span', [
+                                                h('Icon', {
+                                                    props: {
+                                                        type: 'ios-paper-outline'
+                                                    },
+                                                    style: {
+                                                        marginRight: '8px'
+                                                    }
+                                                }),
+                                                h('span', data.title)
+                                            ]),
+                                            h('span', {
+                                                style: {
+                                                    display: 'inline-block',
+                                                    float: 'right',
+                                                    marginRight: '32px'
+                                                }
+                                            }, [
+                                                h('Button', {
+                                                    props: Object.assign({}, this.buttonProps, {
+                                                        icon: 'md-cloud-upload'
+                                                    }),
+                                                    style: {
+                                                        marginRight: '8px'
+                                                    },
+                                                    on: {
+                                                        click: () => { this.append(data) }
+                                                    }
+                                                })
+                                            ])
+                                        ]);
+                                    },
+                                },
+                                {
+                                    title: 'leaf 1-2-1',
+                                    expand: true,
+                                    render: (h, { root, node, data }) => {
+                                        return h('span', {
+                                            style: {
+                                                display: 'inline-block',
+                                                width: '100%'
+                                            }
+                                        }, [
+                                            h('span', [
+                                                h('Icon', {
+                                                    props: {
+                                                        type: 'ios-paper-outline'
+                                                    },
+                                                    style: {
+                                                        marginRight: '8px'
+                                                    }
+                                                }),
+                                                h('span', data.title)
+                                            ]),
+                                            h('span', {
+                                                style: {
+                                                    display: 'inline-block',
+                                                    float: 'right',
+                                                    marginRight: '32px'
+                                                }
+                                            }, [
+                                                h('Button', {
+                                                    props: Object.assign({}, this.buttonProps, {
+                                                        icon: 'md-sync',
+                                                    }),
+                                                    style: {
+                                                        marginRight: '8px'
+                                                    },
+                                                    attrs: {
+                                                        title: '更新',
+                                                    },
+                                                    on: {
+                                                        click: () => { this.append(root, node, data) }
+                                                    }
+                                                })
+                                            ])
+                                        ]);
+                                    },
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            data3: [],
+            dirTree3: [],
+            buttonProps: {
+                type: 'default',
+                size: 'small',
+            },
+            modalFlag: false
+            
         };
     },
     methods: {
+        renderContent (h, { root, node, data }) {
+            return h('span', {
+                style: {
+                    display: 'inline-block',
+                    width: '100%'
+                }
+            }, [
+                h('span', [
+                    h('Icon', {
+                        props: {
+                            type: 'ios-paper-outline'
+                        },
+                        style: {
+                            marginRight: '8px'
+                        }
+                    }),
+                    h('span', data.title)
+                ]),
+                h('span', {
+                    style: {
+                        display: 'inline-block',
+                        float: 'right',
+                        marginRight: '32px'
+                    }
+                }, [
+                    h('Button', {
+                        props: Object.assign({}, this.buttonProps, {
+                            icon: 'md-cloud-upload'
+                        }),
+                        style: {
+                            marginRight: '8px'
+                        },
+                        on: {
+                            click: () => { this.append(data) }
+                        }
+                    })
+                ])
+            ]);
+        },
+        append (root, node, data) {
+
+            console.log(root);
+            console.log(node);
+            console.log(data);
+
+            // 右侧弹窗提示操作进度
+            
+            data.render = (h, { root, node, data }) => {
+                return h('span', {
+                    style: {
+                        display: 'inline-block',
+                        width: '100%'
+                    }
+                }, [
+                    h('span', [
+                        h('Icon', {
+                            props: {
+                                type: 'ios-paper-outline'
+                            },
+                            style: {
+                                marginRight: '8px'
+                            }
+                        }),
+                        h('span', data.title)
+                    ]),
+                    h('span', {
+                        style: {
+                            display: 'inline-block',
+                            float: 'right',
+                            marginRight: '32px'
+                        }
+                    }, [
+                        h('Button', {
+                            props: Object.assign({}, this.buttonProps, {
+                                icon: 'md-cloud-done',
+                            }),
+                            style: {
+                                marginRight: '8px'
+                            },
+                            attrs: {
+                                title: '就绪',
+                            },
+                            on: {
+                                //click: () => { this.append(root, node, data) }
+                            }
+                        })
+                    ])
+                ]);
+            }
+
+            const children = data.children || [];
+            children.push({
+                title: 'appended node',
+                expand: true
+            });
+            this.$set(data, 'children', children);
+        },
         getSubDirTree(dirs, index, flag){// return []
             for(var i = 0; i < dirs.length; i++){
                 if(dirs[i].type == 1){
@@ -96,24 +514,249 @@ export default {
                     }
                 }
             }
+        },
+        getSubDirTree3(dirData, tempTree, children){// return []
+        //debugger;
+            for(var i = 0; i < dirData.length; i++){
+                if(children == 1){
+                    if(tempTree.children == undefined){
+                        tempTree.children = [];
+                    }
+                    tempTree.children.push({
+                        title: dirData[i].name,
+                        render: this.getRender({
+                            sync_state: dirData[i].sync_state,
+                            type: dirData[i].type,
+                            path: dirData[i].path
+                        }),
+                    });
+
+                }else{
+                    tempTree.push({
+                        title: dirData[i].name,
+                        render: this.getRender({
+                            sync_state: dirData[i].sync_state,
+                            type: dirData[i].type,
+                            path: dirData[i].path
+                        }),
+                    });
+                }
+            }
+            for(var i = 0; i < dirData.length; i++){
+                if(children == 0){
+                    if(dirData[i].type == 1){
+                        this.getSubDirTree3(dirData[i].dirs, this.dirTree3[i], 1);
+                    }
+                }else{
+                    if(dirData[i].type == 1){
+                        this.getSubDirTree3(dirData[i].dirs, tempTree.children[i], 1);
+                    }
+                }
+            }
+        },
+        getRender(fileInfo){
+            /* var file = {
+                sync_state: ''
+            } */
+
+            var treeInfo = this.getTreeInfo(fileInfo);
+
+            return (h, { root, node, data }) => {
+                return h('span', {
+                    style: {
+                        display: 'inline-block',
+                        width: '100%',
+                    }
+                }, [
+                    h('span', [
+                        h('Icon', {
+                            props: {
+                                type: treeInfo.iconType
+                            },
+                            style: {
+                                marginRight: '8px'
+                            }
+                        }),
+                        h('span', data.title)
+                    ]),
+                    h('span', {
+                        style: {
+                            display: 'inline-block',
+                            float: 'right',
+                            marginRight: '32px'
+                        }
+                    }, [
+                        h('Button', {
+                            props: Object.assign({}, this.buttonProps, {
+                                icon: treeInfo.buttonType,
+                            }),
+                            style: {
+                                marginRight: '8px'
+                            },
+                            attrs: {
+                                title: treeInfo.buttonTitle,
+                            },
+                            on: {
+                                click: () => { this.getTreeButtonOnFunction(fileInfo)(root, node, data) }
+                            }
+                        })
+                    ])
+                ]);
+            }
+        },
+        getTreeInfo(file){
+
+            var info = {};
+
+            switch (file.sync_state){
+                case 'upload': {
+                    info.buttonType = 'md-cloud-upload';
+                    info.buttonTitle = '上传';
+                }break;
+                case 'download': {
+                    info.buttonType = 'md-cloud-download';
+                    info.buttonTitle = '下载';
+                }break;
+                case 'sync': {
+                    info.buttonType = 'md-sync';
+                    info.buttonTitle = '同步';
+                }break;
+                case 'done': {
+                    info.buttonType = 'md-cloud-done';
+                    info.buttonTitle = '就绪';
+                }break;
+            }
+
+            if(file.type == 1){
+                info.iconType = 'ios-folder';
+            }else{
+                info.iconType = 'ios-document-outline';
+            }
+
+            return info;
+        },
+        getTreeButtonOnFunction(file){
+
+            switch (file.sync_state){
+                case 'upload': {
+                    return (root, node, data) => {
+                        console.log(root);
+                        console.log(node);
+                        console.log(data);
+                        // 上传处理
+                        console.log('upload: ' + file.path);
+
+                        this.modalFlag = true;
+
+                        // 上传结果反馈
+                        // 发起文件上传请求
+
+                        // 最长时延（大文件呢？）
+                        setTimeout(() => {
+                            this.modalFlag = false;
+                            // 操作完成修改icon
+                            this.setRender(data, file);
+
+                            this.$Notice.open({
+                                title: "文件上传提示",
+                                desc: "文件xx上传成功"
+                            });
+                        }, 3000);
+                    }
+                }break;
+                case 'download': {
+                }break;
+                case 'sync': {
+                    // 
+                    return (root, node, data) => {
+                        console.log(root);
+                        console.log(node);
+                        console.log(data);
+                        // 上传处理
+                        console.log('upload: ' + file.path);
+
+                        // 操作完成修改icon
+                        this.setRender(data, file);
+                    }
+                }break;
+                case 'done': {
+                }break;
+            }
+        },
+        setRender(data, file){
+
+            var treeInfo = this.getTreeInfo(file);
+            treeInfo.buttonType = 'md-cloud-done';
+            treeInfo.buttonTitle = '就绪';
+
+            data.render = (h, { root, node, data }) => {
+                return h('span', {
+                    style: {
+                        display: 'inline-block',
+                        width: '100%',
+                    }
+                }, [
+                    h('span', [
+                        h('Icon', {
+                            props: {
+                                type: treeInfo.iconType
+                            },
+                            style: {
+                                marginRight: '8px'
+                            }
+                        }),
+                        h('span', data.title)
+                    ]),
+                    h('span', {
+                        style: {
+                            display: 'inline-block',
+                            float: 'right',
+                            marginRight: '32px'
+                        }
+                    }, [
+                        h('Button', {
+                            props: Object.assign({}, this.buttonProps, {
+                                icon: treeInfo.buttonType,
+                            }),
+                            style: {
+                                marginRight: '8px'
+                            },
+                            attrs: {
+                                title: treeInfo.buttonTitle,
+                            },
+                            on: {
+                                //click: () => { this.getTreeButtonOnFunction(fileInfo)(root, node, data) }
+                            }
+                        })
+                    ])
+                ]);
+            }
         }
     },
     created() {
         // 读取文件夹数据
         // /var/syncdir
         var dirData = {
+            type: 1,
+            root: true,
             name: '/var/syncdir',
             dirs: [
                 {
                     type: 1,
                     name: 'a',// /var/syncdir/a
+                    path: '/var/syncdir/a',
+                    sync_state: 'upload',// upload=client new, download=server add, update=server/client modify, delete=client delete 
                     dirs: [
                         {
                             type: 0,
+                            sync_state: 'upload',
+                            path: '/var/syncdir/a/a.txt',
                             name: 'a.txt'// /var/syncdir/a/a.txt
                         },
                         {
                             type: 0,
+                            sync_state: 'sync',
+                            path: '/var/syncdir/a/a2.txt',
                             name: 'a2.txt'// /var/syncdir/a/a2.txt
                         }
                     ]
@@ -121,34 +764,50 @@ export default {
                 {
                     type: 1,
                     name: 'b',// /var/syncdir/b
+                    sync_state: 'upload',
+                    path: '/var/syncdir/b',
                     dirs: [
                         {
                             type: 0,
+                            sync_state: 'upload',
+                            path: '/var/syncdir/b/b.txt',
                             name: 'b.txt'// /var/syncdir/b/b.txt
                         },
                         {
                             type: 0,
+                            sync_state: 'upload',
+                            path: '/var/syncdir/b/b2.txt',
                             name: 'b2.txt'// /var/syncdir/b/b2.txt
                         },
                         {
                             type: 1,
                             name: 'b2',// /var/syncdir/a/b
+                            sync_state: 'upload',
+                            path: '/var/syncdir/b/b2',
                             dirs: [
                                 {
                                     type: 1,
+                                    sync_state: 'upload',
+                                    path: '/var/syncdir/b/b2/b3',
                                     name: 'b3',// /var/syncdir/b/b/b3.txt
                                     dirs: [
                                         {
                                             type: 1,
                                             name: 'b4',
+                                            sync_state: 'upload',
+                                            path: '/var/syncdir/b/b2/b3/b4',
                                             dirs: [
                                                 {
                                                     type: 1,
                                                     name: 'b5',
+                                                    path: '/var/syncdir/b/b2/b3/b4/b5',
+                                                    sync_state: 'upload',
                                                     dirs: [
                                                         {
                                                             type: 0,
                                                             name: 'b6.txt',
+                                                            path: '/var/syncdir/b/b2/b3/b4/b5/b6.txt',
+                                                            sync_state: 'upload',
                                                             // dirs: [
                                                             //     {
                                                                     
@@ -189,6 +848,9 @@ export default {
 
         this.getSubDirTree2(dirData.dirs, this.dirTree, 0);
         this.data1 = this.dirTree;
+
+        this.getSubDirTree3(dirData.dirs, this.dirTree3, 0);
+        this.data3 = this.dirTree3;
 
     },
 }

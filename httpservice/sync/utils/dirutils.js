@@ -1,12 +1,14 @@
 var fs = require('fs');
 var path = require('path');
+var md5 = require('./md5.js');
 
-var configdb = require('../database/configdb');
+var configdb = require('../database/configdb');// 应用数据目录
 
-var tokenFilePath = '../database/token.json';
-var configDir = '../config/';
+var tokenFilePath = '../database/token.json';// token 文件路径
+var configDir = '../config/';// 应用配置目录
 
-var dirData = [];
+var dirData = [];// 同步文件json夹数
+var dirMD5Data = [];// 同步文件夹所有文件的MD5数据 
 
 var DirUtil = function(){
     
@@ -114,30 +116,58 @@ DirUtil.prototype = {
         //var tmpPath = "E:\\vscode_workspace\\html";
         var tmpPath = "E:\\syncDir";
         this.parseDir(tmpPath, dirData);
-        //console.log(dirData[0].dirs[1].dirs);
+        console.log(dirData[1]);
         
         return {
             name: path,
             dirs: dirData
         };
     },
-    parseDir(path, tempData){
+    parseDir(path, tempData){// 解析指定文件夹下的所有文件为json
         var item = {};
         var files = fs.readdirSync(path, {withFileTypes: true});// 同步方式读取文件夹
         for(var i = 0; i < files.length; i++){
             item = {};// 重要，，否则其他过程会影响
             if(files[i].isDirectory()){
-                item.type = 1,
-                item.name = files[i].name;
-                item.dirs = [];
+                item.type = 1,// 文件类型 1：文件夹 0：文件
+                item.name = files[i].name;// 文件或者文件夹名
+                item.dirs = [];// 文件夹下的文件
+                item.path = path + "\\" + files[i].name,// 文件或者文件夹路径
+                item.sync_state = '',// 文件或文件夹的同步状态
                 tempData.push(item);
-                this.parseDir(path + "/" + files[i].name, tempData[i].dirs);
+                this.parseDir(path + "\\" + files[i].name, tempData[i].dirs);
             }else{
                 item.type = 0,
                 item.name = files[i].name;
+                item.path = path + "\\" + files[i].name,
+                item.sync_state = '',
                 tempData.push(item);
             }
         }
+    },
+    computeDirMD5(path, tempData, root){// 解析指定文件夹下的所有文件为json，包括文件夹
+        var item = {};
+        var tempPath;
+        var files = fs.readdirSync(path, {withFileTypes: true});// 同步方式读取文件夹
+        for(var i = 0; i < files.length; i++){
+            item = {};// 重要，，否则其他过程会影响
+            tempPath = path;
+            if(files[i].isDirectory()){
+                item.type = 1,// 文件类型 1：文件夹 0：文件
+                item.path = tempPath.substring(root.length) + "\\" + files[i].name,// 文件或者文件夹路径
+                item.md5 = md5.getDir(path + "\\" + files[i].name),// 文件夹MD5值
+                tempData.push(item);
+                this.computeDirMD5(path + "\\" + files[i].name, tempData, root);
+            }else{
+                item.type = 0,
+                item.path = tempPath.substring(root.length) + "\\" + files[i].name,
+                item.md5 = md5.getFile(path + "\\" + files[i].name),// 文件MD5值
+                tempData.push(item);
+            }
+        }
+    },
+    checkFileSyncState(){// 检查文件状态
+        // 存储一份所有 文件的 MD5码文件 到服务器和本地 进行对照
     },
     checkDirAvailable(path){// 检查文件夹是否可用
         try {
@@ -147,7 +177,7 @@ DirUtil.prototype = {
             return false;
         }
     },
-    addSyncDir(token, syncpath){
+    addSyncDir(token, syncpath){// 添加同步文件夹
         // 根据token获取用户名
         var userName = this.getUserNameByToken(token);
         var client;
@@ -173,7 +203,7 @@ DirUtil.prototype = {
             });
         }
     },
-    getUserNameByToken(token){
+    getUserNameByToken(token){// 通过token获取用户名信息
         var result = fs.readFileSync(path.resolve(__dirname, tokenFilePath), {encoding: 'utf-8'});
         var data;
         if(result.length < 1){
@@ -193,4 +223,6 @@ DirUtil.prototype = {
 //new DirUtil().createUserConfigDir("test");
 //new DirUtil().parseSyncDir("");
 //console.log(new DirUtil().checkDirAvailable("a"));
-module.exports = new DirUtil()
+new DirUtil().computeDirMD5('e:\\syncDir', dirMD5Data, 'e:\\syncDir');
+console.log(dirMD5Data);
+//module.exports = new DirUtil()

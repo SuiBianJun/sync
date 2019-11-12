@@ -61,7 +61,7 @@ CommonFunction.prototype = {
             }
         });
     },
-    getUserSyncDirInfo(token, callBack){
+    getUserSyncDirInfo(token, callBack){// 根据token获取用户的同步文件夹信息
         common.fs.readFile(common.path.resolve(__dirname, "../database/token.json"), {encoding: "utf-8"}, (err, data) => {
             if(err){
                 console.log(err);
