@@ -58,6 +58,7 @@ app.use("/", function(req, resp, next){
                 resp.end();
                 return;
             }else{
+                // 更新token 失效时间
                 next();
             }
         });

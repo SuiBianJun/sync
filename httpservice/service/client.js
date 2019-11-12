@@ -23,6 +23,12 @@ router.get("/syncdir/list", function(req, resp){// 列出用户同步文件夹�
 
 router.get("/syncdir/content", function(req, resp){// 列出用户同步文件夹内容
 
+    var path = req.body.path;
+    var data = dirutils.parseSyncDir(path);
+    console.log(data);
+    resp.send(new ServerResponse().ok(data));
+    resp.end();
+
 });
 
 router.post("/syncdir/add", function(req, resp){// 添加同步文件夹

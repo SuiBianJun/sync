@@ -47,7 +47,14 @@ CommonFunction.prototype = {
                             // token过期
                             callBack(false);
                         }else{
-                            callBack(true);
+                            // 更新 token expire
+                            tokens[user].expire = new Date().getTime() + common.config.token.expire;
+                            common.fs.writeFile(common.path.resolve(__dirname, "../database/token.json"), JSON.stringify(tokens), "utf-8", (err) => {
+                                if(err)
+                                    console.log(err);
+                                console.log("用户token失效时间更新成功");
+                                callBack(true);
+                            });
                         }
                     }
                 }

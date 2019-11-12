@@ -9,9 +9,9 @@
         </div>
 
         <div v-if="dataLength != 0">
-            <div @click="showDir" style="width: 350px;display: inline-block;">
+            <div @click="showDir(syncDirInfoData[0].local_path)" style="width: 350px;display: inline-block;">
                 <Card :bordered="true" style="width: 350px;" >
-                    <p slot="title" style="height: 35px"><Button type="primary" shape="circle">{{syncDirInfoData[0].local_path}}</Button></p>
+                    <p slot="title" style="height: 35px"><Button type="primary" shape="circle" style="font-weight: 600">{{syncDirInfoData[0].local_path}}</Button></p>
                     <ul style="list-style: none;">
                         <li>是否为同步文件夹: </li>
                         <li>同步状态: </li>
@@ -38,7 +38,7 @@
 import axiosToken from '../js/axiosToken.js'
 import notify from '../js/notification'
 import router from '../js/router'
-
+import store from '../js/store'
 
 export default {
     data: function(){
@@ -52,6 +52,7 @@ export default {
             syncDirInfoData: ''
         };
     },
+    store,
     router,
     methods: {
             // 获取[我的同步文件夹]目录
@@ -153,9 +154,10 @@ export default {
             error(title, msg){
                 notify.requestError(this, title, msg);
             },
-            showDir(){
+            showDir(path){
                 console.log("show dir");
-                router.push({path: '/menuClient/syncDir'});
+                store.commit('setCurrentSyncDirPath', path);// 同步方法
+                router.push({ path: '/menuclient/syncDir'});
             }
         },
         created() {

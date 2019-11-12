@@ -115,8 +115,9 @@ DirUtil.prototype = {
         // };
         //var tmpPath = "E:\\vscode_workspace\\html";
         var tmpPath = "E:\\syncDir";
+        dirData = [];
         this.parseDir(tmpPath, dirData);
-        console.log(dirData[1]);
+        //console.log(dirData);
         
         return {
             name: path,
@@ -221,8 +222,8 @@ DirUtil.prototype = {
 }
 
 //new DirUtil().createUserConfigDir("test");
-//new DirUtil().parseSyncDir("");
+//console.log(new DirUtil().parseSyncDir(""));
 //console.log(new DirUtil().checkDirAvailable("a"));
-new DirUtil().computeDirMD5('e:\\syncDir', dirMD5Data, 'e:\\syncDir');
-console.log(dirMD5Data);
-//module.exports = new DirUtil()
+//new DirUtil().computeDirMD5('e:\\syncDir', dirMD5Data, 'e:\\syncDir');
+//console.log(dirMD5Data);
+module.exports = new DirUtil()
