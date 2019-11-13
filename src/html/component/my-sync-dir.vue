@@ -13,6 +13,9 @@
                         <div>
                             xx文件上传中...
                         </div>
+                        <!-- <div slot="footer">
+                            <Button type="error" size="large" long :loading="modal_loading" @click="del">Delete</Button>
+                        </div> -->
                     </Modal>
                 </div>
             </Card>

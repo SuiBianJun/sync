@@ -4,10 +4,27 @@
         <hr>
         <Tree :data="data2"></Tree>
         <hr>
-        <Tree :data="data3" show-checkbox multiple></Tree>
+        <Tree :data="data3" ref='tree' show-checkbox multiple></Tree>
+        <button @click="getNodes">获取节点</button>
         <Modal v-model="modalFlag" title="请稍等" :mask-closable="false">
             <div>
                 xx文件上传中...
+            </div>
+            <div slot="footer">
+                <!-- <Button type="error" size="large" long :loading="modal_loading" @click="del">Delete</Button> -->
+            </div>
+        </Modal>
+        <!-- 删除提示 -->
+        <Modal v-model="modalDelete" width="360">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="ios-information-circle"></Icon>
+            </p>
+            <div style="text-align:center">
+                该操作将删除远程文件系统上的文件，是否继续执行？
+            </div>
+            <div slot="footer">
+                <Button type="error"  @click="cancelDelete">取消</Button>
+                <Button type="error"  @click="confirmDelete">确认</Button>
             </div>
         </Modal>
     </div>
@@ -291,15 +308,20 @@ export default {
                                                     marginRight: '32px'
                                                 }
                                             }, [
-                                                h('Button', {
-                                                    props: Object.assign({}, this.buttonProps, {
-                                                        icon: 'md-cloud-upload'
+                                                h('Icon', {
+                                                    props: Object.assign({}, {
+                                                        type: 'md-trash',
+                                                        size: 22,
+                                                        color: 'red'
+                                                    }, {
                                                     }),
                                                     style: {
                                                         marginRight: '8px'
                                                     },
                                                     on: {
-                                                        click: () => { this.append(data) }
+                                                        click: () => { 
+                                                            this.treeDeleteNode = {root, node, data};
+                                                            this.deleteTreeNode() }
                                                     }
                                                 })
                                             ])
@@ -363,7 +385,9 @@ export default {
                 type: 'default',
                 size: 'small',
             },
-            modalFlag: false
+            modalFlag: false,
+            modalDelete: false,
+            treeDeleteNode: {}// 删除节点的数据
             
         };
     },
@@ -524,21 +548,29 @@ export default {
                     }
                     tempTree.children.push({
                         title: dirData[i].name,
+                        path: 'path',
+                        type: dirData[i].type,
+                        sync_state: dirData[i].sync_state,
                         render: this.getRender({
                             sync_state: dirData[i].sync_state,
                             type: dirData[i].type,
                             path: dirData[i].path
                         }),
+                        disabled: dirData[i].sync_state == 'done' ? true : false
                     });
 
                 }else{
                     tempTree.push({
                         title: dirData[i].name,
+                        path: 'path',
+                        type: dirData[i].type,
+                        sync_state: dirData[i].sync_state,
                         render: this.getRender({
                             sync_state: dirData[i].sync_state,
                             type: dirData[i].type,
-                            path: dirData[i].path
+                            path: dirData[i].path,
                         }),
+                        //disabled: dirData[i].sync_state == 'done' ? true : false
                     });
                 }
             }
@@ -586,12 +618,30 @@ export default {
                             marginRight: '32px'
                         }
                     }, [
+                        fileInfo.sync_state == 'done' ? 
+                        h('Icon', {
+                            props: Object.assign({}, {
+                                type: 'md-cloud-done',
+                                size: 22,
+                                color: 'green'
+                            }, {
+                            }),
+                            style: {
+                                marginRight: '8px',
+                                visibility: (fileInfo.type == 1) ? 'hidden' : 'visible'
+                            },
+                            on: {
+                                click: () => { console.log('done') }
+                            }
+                        }) : 
                         h('Button', {
                             props: Object.assign({}, this.buttonProps, {
                                 icon: treeInfo.buttonType,
                             }),
                             style: {
-                                marginRight: '8px'
+                                marginRight: '8px',
+                                // 如果是文件夹，并且sync_state为done,则不用再显示 图标
+                                visibility: (fileInfo.type == 1 && fileInfo.sync_state == 'done') ? 'hidden' : 'visible'
                             },
                             attrs: {
                                 title: treeInfo.buttonTitle,
@@ -731,6 +781,79 @@ export default {
                     ])
                 ]);
             }
+        },
+        getNodes: function () {// 获取批量选中的节点，并进行相应的操作，，如果某项操作失败，进行提示
+            console.log(this.$refs.tree.getCheckedNodes());
+            var nodes = this.$refs.tree.getCheckedNodes();
+            // 修改 render 和 select
+            //nodes[0].render = 
+            nodes.forEach(element => {
+                this.setDoneRender(element);
+            });
+        },
+        setDoneRender(data){// 设置同步完成后的状态
+            data.render = (h, { root, node, data }) => {
+                return h('span', {
+                    style: {
+                        display: 'inline-block',
+                        width: '100%',
+                    }
+                }, [
+                    h('span', [
+                        h('Icon', {
+                            props: {
+                                type: data.type == 1 ? 'ios-folder' : 'ios-document-outline'
+                            },
+                            style: {
+                                marginRight: '8px'
+                            }
+                        }),
+                        h('span', data.title)
+                    ]),
+                    h('span', {
+                        style: {
+                            display: 'inline-block',
+                            float: 'right',
+                            marginRight: '32px'
+                        }
+                    }, [
+                        h('Icon', {
+                            props: Object.assign({}, {
+                                type: 'md-cloud-done',
+                                size: 22,
+                                color: 'green'
+                            }, {
+                            }),
+                            style: {
+                                marginRight: '8px',
+                                visibility: (data.type == 1) ? 'hidden' : 'visible'
+                            },
+                            on: {
+                                click: () => { console.log('done') }
+                            }
+                        }) 
+                    ])
+                ]);
+            };
+            data.disabled = true;
+        },
+        deleteTreeNode(){
+            this.modalDelete = true;
+        },
+        cancelDelete(){
+            this.modalDelete = false;
+        },
+        confirmDelete(){
+            // 执行确认操作
+            console.log('delete');
+            
+            // 删除Tree 组件节点操作
+            const parentKey = this.treeDeleteNode.root.find(el => el === this.treeDeleteNode.node).parent;
+            const parent = this.treeDeleteNode.root.find(el => el.nodeKey === parentKey).node;
+            const index = parent.children.indexOf(this.treeDeleteNode.data);
+            parent.children.splice(index, 1);
+
+            this.modalDelete = false;
         }
     },
     created() {
@@ -745,7 +868,7 @@ export default {
                     type: 1,
                     name: 'a',// /var/syncdir/a
                     path: '/var/syncdir/a',
-                    sync_state: 'upload',// upload=client new, download=server add, update=server/client modify, delete=client delete 
+                    sync_state: 'done',// upload=client new, download=server add, update=server/client modify, delete=client delete 
                     dirs: [
                         {
                             type: 0,
@@ -764,18 +887,18 @@ export default {
                 {
                     type: 1,
                     name: 'b',// /var/syncdir/b
-                    sync_state: 'upload',
+                    sync_state: 'done',
                     path: '/var/syncdir/b',
                     dirs: [
                         {
                             type: 0,
-                            sync_state: 'upload',
+                            sync_state: 'download',
                             path: '/var/syncdir/b/b.txt',
                             name: 'b.txt'// /var/syncdir/b/b.txt
                         },
                         {
                             type: 0,
-                            sync_state: 'upload',
+                            sync_state: 'done',
                             path: '/var/syncdir/b/b2.txt',
                             name: 'b2.txt'// /var/syncdir/b/b2.txt
                         },

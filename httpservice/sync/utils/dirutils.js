@@ -146,7 +146,7 @@ DirUtil.prototype = {
             }
         }
     },
-    computeDirMD5(path, tempData, root){// 解析指定文件夹下的所有文件为json，包括文件夹
+    computeDirMD5(path, tempData, root){// 计算文件夹下的所有文件的MD5值
         var item = {};
         var tempPath;
         var files = fs.readdirSync(path, {withFileTypes: true});// 同步方式读取文件夹
