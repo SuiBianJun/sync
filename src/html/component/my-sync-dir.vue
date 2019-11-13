@@ -281,7 +281,9 @@ export default {
             console.log(params);
             switch (method){
                 case 'get': {
-                    axiosToken.get(addr, params)
+                    axiosToken.get(addr, {
+                        params: params
+                    })
                     .then((response) => {
                         console.log(response);
                         this.handleAjaxResponse(response, callBack);
@@ -317,6 +319,9 @@ export default {
         // 请求syncDir数据
         console.log('create my-sync-dir')
         console.log("currentSyncDir: " + store.state.currentSyncDirPath);
+        if(store.state.currentSyncDirPath == ''){
+            return;
+        }
         //this.currentPath = this.$router.params.path;
         this.doAjax('/client/syncdir/content', {path: store.state.currentSyncDirPath}, 'get', this.showSyncDir);
         

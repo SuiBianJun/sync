@@ -116,7 +116,7 @@ DirUtil.prototype = {
         //var tmpPath = "E:\\vscode_workspace\\html";
         var tmpPath = "E:\\syncDir";
         dirData = [];
-        this.parseDir(tmpPath, dirData);
+        this.parseDir(path, dirData);
         //console.log(dirData);
         
         return {
@@ -178,7 +178,7 @@ DirUtil.prototype = {
             return false;
         }
     },
-    addSyncDir(token, syncpath){// 添加同步文件夹
+    addSyncDir(token, syncpath){// 添加同步文件夹, 可添加多个同步文件夹
         // 根据token获取用户名
         var userName = this.getUserNameByToken(token);
         var client;

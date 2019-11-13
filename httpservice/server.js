@@ -1,5 +1,6 @@
 var express = require('express');
 var fs = require('fs');
+var url = require('url');
 var bodyParser = require('body-parser');
 
 var router = require('./router/router');
@@ -38,6 +39,9 @@ app.get("/favicon.ico", function(req, resp){
 
 // accesstoken 全局检查
 app.use("/", function(req, resp, next){
+
+    // 解析getq 请求参数，以键值对方式挂载到req请求中，方便后续操作
+    req.query = url.parse(req.url, true).query;
 
     console.log("url: " + req.url);
 

@@ -24,7 +24,7 @@ var vm = new Vue({
         contentmenuchange(menuname){
             switch(menuname){
                 case 'client': {
-                    router.push({path: '/menuclient/content'});
+                    router.push({path: '/menuclient/syncdirinfo'});
                 }break;
                 case 'server': {
                     router.push({path: '/menuserver'});

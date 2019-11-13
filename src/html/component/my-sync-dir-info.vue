@@ -9,14 +9,19 @@
         </div>
 
         <div v-if="dataLength != 0">
-            <div @click="showDir(syncDirInfoData[0].local_path)" style="width: 350px;display: inline-block;">
+            <div v-for="item in syncDirInfoData" :key="item.local_path" @click="showDir(item.local_path)" style="width: 350px;display: inline-block;">
                 <Card :bordered="true" style="width: 350px;" >
-                    <p slot="title" style="height: 35px"><Button type="primary" shape="circle" style="font-weight: 600">{{syncDirInfoData[0].local_path}}</Button></p>
+                    <p slot="title" style="height: 35px"><Button type="primary" shape="circle" style="font-weight: 600">{{item.local_path}}</Button></p>
                     <ul style="list-style: none;">
                         <li>是否为同步文件夹: </li>
                         <li>同步状态: </li>
                         <li>Bucket: </li>
                     </ul>
+                </Card>
+            </div>
+            <div class="hover-class" style="width: 350px;display: inline-block;line-height: 129px;vertical-align: top;" @click.prevent="addSyncDirModal()">
+                <Card :bordered="true" style="width: 350p; text-align: center">
+                    <Icon type="ios-add-circle" />添加同步文件夹
                 </Card>
             </div>
         </div>
@@ -118,6 +123,7 @@ export default {
                 }, 1000);
             },
             addSyncDir(path){
+                
                 this.doAjax('/client/syncdir/add', {path: path}, 'post', ()=>{
                     // 刷新页面
                     router.push({path: '/menuClient/syncdirinfo'});
@@ -157,7 +163,7 @@ export default {
             showDir(path){
                 console.log("show dir");
                 store.commit('setCurrentSyncDirPath', path);// 同步方法
-                router.push({ path: '/menuclient/syncDir'});
+                router.push({ path: '/menuclient/contentsyncdir'});
             }
         },
         created() {

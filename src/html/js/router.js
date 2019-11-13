@@ -6,6 +6,7 @@ import menuServer from '../component/menu-server.vue'
 import menuSetting from '../component/menu-setting.vue'
 import syncDirInfo from '../component/my-sync-dir-info.vue'
 import syncDir from '../component/my-sync-dir.vue'
+import bucketInfo from '../component/my-bucket-info.vue'
 
 Vue.use(VueRouter);
 
@@ -32,9 +33,16 @@ var router = new VueRouter({
                 },
                 {
                     name: 'menuclientcontentsyncdir',
-                    path: 'syncDir',
+                    path: 'contentsyncdir',
                     components: {
                         rightContent: syncDir
+                    }
+                },
+                {
+                    name: 'menuclientbucketinfo',
+                    path: 'bucketinfo',
+                    components: {
+                        rightContent: bucketInfo
                     }
                 }
             ]

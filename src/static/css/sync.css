@@ -143,3 +143,9 @@
     justify-content: center;
     top: 40%;
 }
+
+/* my-sync-dir-info  */
+.hover-class:hover {
+    background-color: gainsboro;
+    cursor: pointer;
+}
