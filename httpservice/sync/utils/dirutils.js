@@ -3,7 +3,6 @@ var path = require('path');
 var md5 = require('./md5.js');
 
 var configdb = require('../database/configdb');// 应用数据目录
-
 var tokenFilePath = '../database/token.json';// token 文件路径
 var configDir = '../config/';// 应用配置目录
 
@@ -41,6 +40,19 @@ DirUtil.prototype = {
                         if(err)
                             console.log(err);
                         console.log("用户配置文件创建成功");
+                    });
+                });
+                fs.mkdir(path.resolve(__dirname, configDir + accessKeyId + "/server/"), {recursive: true}, (err) => {
+                    if(err)
+                        console.log(err);
+                    console.log("服务器配置文件夹创建成功");
+                    var server = {
+                        bucket_syncdir_map: []
+                    };
+                    fs.writeFile(path.resolve(__dirname, configDir + accessKeyId + "/server/server.json"), JSON.stringify(server), "utf-8", (err) => {
+                        if(err)
+                            console.log(err);
+                        console.log("服务器配置文件创建成功");
                     });
                 });
             }
