@@ -110,6 +110,20 @@ router.post("/syncdir/sync", function(req, resp){// 上传文件到远程服务�
     return;
 
 });
+router.post("/syncdir/relateBucket", function(req, resp){// 同步文件夹关联Bucket
+
+    var token = req.header("AccessToken");
+    var syncDir = req.body.dir;
+    var bucket = req.body.bucket;
+
+    
+
+    // 返回操作结果
+    resp.send(new ServerResponse().ok());
+    resp.end();
+    return;
+
+});
 
 router.get("/bucket/list", function(req, resp){// 列出用户同步文件夹，只有同步文件夹的信息
 

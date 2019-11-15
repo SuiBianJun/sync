@@ -5,7 +5,7 @@
                 <p slot="title" style="height: 35px; text-align: center;"><Button type="primary" shape="circle" style="font-weight: 600">{{item.bucket}}</Button></p>
                 <ul style="list-style: none;">
                     <li>是否为空bucket: </li>
-                    <li>同步文件夹路径: </li>
+                    <li>同步文件夹路径: {{item.syncdir}}<span v-show="item.syncdir == ''" @click.stop.prevent="addSyncDir(item.bucket)" class="hover-class"><Icon type="ios-add-circle" /></span></li>
                     <li>状态: </li>
                 </ul>
             </Card>
@@ -21,8 +21,18 @@
             v-model="modalAddBucket"
             :loading="loadingFlag"
             @on-ok="confimAddBucket"
-            class-name="vertical-center-modal">
+            class-name="">
             <Input v-model="bucketName" placeholder="请输入Bucket" style="width: 300px" />
+        </Modal>
+        <Modal
+            title="关联同步文件夹"
+            v-model="modalAddSyncDir"
+            :loading="loadingFlag"
+            @on-ok="confimAddSyncDir"
+            class-name="">
+            <Select v-model="selectSyncDir" style="width:200px">
+                <Option v-for="item in syncDirList" :value="item.name" :key="item.name">{{ item.name }}</Option>
+            </Select>
         </Modal>
 
     </div>
@@ -39,7 +49,11 @@ export default {
             buckets: [],
             loadingFlag: true,
             modalAddBucket: false,
-            bucketName: ''
+            bucketName: '',
+            currentBucketName: '',
+            modalAddSyncDir: false,
+            selectSyncDir: '',
+            syncDirList: [{name: 'E:\\syncDir'}],
         };
     },
     router,
@@ -49,11 +63,13 @@ export default {
             if(response.status != 200){
                 this.error("Bucket获取提示", "网络连接错误");
 
-                callBackFun([{
+                callBackFun({
+                    data: [{
                         bucket: "bucket1",
                         syncdir: '',
                         empty: '1'
-                    }]
+                        }]
+                    }
                 );
 
                 return;
@@ -113,6 +129,26 @@ export default {
         confimAddBucket(){
             this.doAjax('/client/bucket/add', {bucket: this.bucketName}, 'post', () => {
                 this.modalAddBucket = false;
+                router.push({path: '/menuclient/bucketinfo'});
+                this.doAjax('/client/bucket/list', {}, 'get', this.showBucketInfo);
+            });
+        },
+        addSyncDir(bucket){
+            this.currentBucketName = bucket;
+            this.modalAddSyncDir = true;
+        },
+        confimAddSyncDir(){
+            setTimeout(() => {
+                this.modalAddSyncDir = false;
+                this.addDir(this.selectSyncDir);
+                this.selectSyncDir = '';
+            }, 1000);
+        },
+        addDir(dir){
+            this.doAjax('/client/bucket/relateSyncDir', {
+                bucket: this.currentBucketName,
+                dir: dir
+            }, 'post', () => {
                 router.push({path: '/menuclient/bucketinfo'});
                 this.doAjax('/client/bucket/list', {}, 'get', this.showBucketInfo);
             });

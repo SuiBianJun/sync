@@ -15,7 +15,7 @@
                     <ul style="list-style: none;">
                         <li>是否为同步文件夹: </li>
                         <li>同步状态: </li>
-                        <li>Bucket: </li>
+                        <li>Bucket: {{item.bucket_name}}<span v-show="item.bucket_name == ''" @click.stop.prevent="addBucket(item.local_path)" class="hover-class"><Icon type="ios-add-circle" /></span></li>
                     </ul>
                 </Card>
             </div>
@@ -31,8 +31,19 @@
             v-model="modalAddSyncdir"
             :loading="loadingFlag"
             @on-ok="confimAddSyncDir"
-            class-name="vertical-center-modal">
+            class-name="">
             <Input v-model="synDirPath" placeholder="请复制同步文件夹路径到此" style="width: 300px" />
+        </Modal>
+
+        <Modal
+            title="关联Bucket"
+            v-model="modalAddBucket"
+            :loading="loadingFlag"
+            @on-ok="confimAddBucket"
+            class-name="">
+            <Select v-model="selectBucket" style="width:200px">
+                <Option v-for="item in bucketList" :value="item.name" :key="item.name">{{ item.name }}</Option>
+            </Select>
         </Modal>
 
     </div>
@@ -51,10 +62,15 @@ export default {
             data: {},
             dataLength: 0,
             modalAddSyncdir: false,// 是否显示modal
+            modalAddBucket: false,
             synDirPath: '',// 同步文件夹
             loadingFlag: true,// modal关闭是否延迟
             borderFlag: true,// 是否显示list的边框
-            syncDirInfoData: ''
+            syncDirInfoData: '',
+            bucketName: '',
+            bucketList: [{name: 'bucket-1'}],
+            selectBucket: '',
+            currentSyncDir: ''
         };
     },
     store,
@@ -127,7 +143,6 @@ export default {
                 this.doAjax('/client/syncdir/add', {path: path}, 'post', ()=>{
                     // 刷新页面
                     router.push({path: '/menuClient/syncdirinfo'});
-
                     this.getAllSyncDir();
                 });
             },
@@ -164,6 +179,27 @@ export default {
                 console.log("show dir");
                 store.commit('setCurrentSyncDirPath', path);// 同步方法
                 router.push({ path: '/menuclient/contentsyncdir'});
+            },
+            addBucket(dir){
+                console.log('add bucket');
+                this.modalAddBucket = true;
+                this.currentSyncDir = dir;
+            },
+            confimAddBucket(){
+                setTimeout(() => {
+                    this.modalAddBucket = false;
+                    this.addSyncDirBucket(this.selectBucket);
+                    this.selectBucket = '';
+                }, 1000);
+            },
+            addSyncDirBucket(bucket){
+                this.doAjax('/client/syndir/relateBucket', {
+                    dir: this.currentSyncDir,
+                    bucket: bucket
+                }, 'post', () => {
+                    router.push({path: '/menuClient/syncdirinfo'});
+                    this.getAllSyncDir();
+                });
             }
         },
         created() {
