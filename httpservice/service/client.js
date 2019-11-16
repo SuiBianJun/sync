@@ -41,6 +41,8 @@ router.post("/syncdir/add", function(req, resp){// 添加同步文件夹
     if(!dirutils.checkDirAvailable(path)){
         console.log("invalid path");
         resp.send(new ServerResponse().failed(null, "无效的同步文件夹，请重新配置"));
+        resp.end();
+        return;
     }
 
     var token = req.header("AccessToken");
@@ -57,6 +59,25 @@ router.post("/syncdir/add", function(req, resp){// 添加同步文件夹
     return;
 
 });
+
+router.post("/syncdir/delete", function(req, resp){// 添加同步文件夹
+
+    var dir = req.body.dir;
+    // 检查path是否可用
+    var token = req.header("AccessToken");
+
+    dirutils.deleteSyncDir(token, dir, result => {
+        if(result){
+            resp.send(new ServerResponse().ok());
+        }else{
+            resp.send(new ServerResponse().failed());
+        }
+        resp.end();
+        return;
+    });
+
+});
+
 
 router.post("/syncdir/upload", function(req, resp){// 上传文件到远程服务器
 
@@ -116,12 +137,17 @@ router.post("/syncdir/relateBucket", function(req, resp){// 同步文件夹关�
     var syncDir = req.body.dir;
     var bucket = req.body.bucket;
 
-    
+    dirutils.syncDirRelateBucket(token, syncDir, bucket, result => {
+        if(result){
+            resp.send(new ServerResponse().ok());
+        }else{
+            resp.send(new ServerResponse().failed());
+        }
+        // 返回操作结果
+        resp.end();
+        return;
+    });
 
-    // 返回操作结果
-    resp.send(new ServerResponse().ok());
-    resp.end();
-    return;
 
 });
 
@@ -156,6 +182,20 @@ router.post("/bucket/add", function(req, resp){// 添加同步文件夹
     resp.send(new ServerResponse().ok());
     resp.end();
     return;
+
+});
+
+router.get("/bucket/unusedBucket", function(req, resp){// 添加同步文件夹
+
+    var token = req.header("AccessToken");
+    // 添加到配置文件中
+
+    bucketutils.getUnusedBucket(token, (data) => {
+        resp.send(new ServerResponse().ok(data));
+        resp.end();
+        return;
+    });
+
 
 });
 

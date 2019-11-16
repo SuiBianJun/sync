@@ -36,7 +36,7 @@ BucketUtils.prototype = {
             var item = {};
             item.bucket = bucket;
             item.syncdir_path = '';
-            item.empty = '';
+            item.empty = '1';
             server.bucket_syncdir_map.push(item);
 
             fs.writeFile(path.resolve(__dirname, configDir + userName + "/server/server.json"), JSON.stringify(server), "utf-8", (err) => {
@@ -61,6 +61,39 @@ BucketUtils.prototype = {
                     config = JSON.parse(data);
                     console.log(config);
                     callBack(config.bucket_syncdir_map);
+                }else{
+                    // 配置错误
+                }
+
+            });
+        }
+    },
+    getUnusedBucket(token, callBack){
+        var userName = this.getUserNameByToken(token);
+        if(userName == ''){
+
+        }else{
+            common.fs.readFile(common.path.resolve(__dirname, "../config/" + userName + "/server/server.json"), {encoding: "utf-8"}, (err, data) => {
+                if(err){
+                    console.log(err);
+                }
+                var unusedBucket = [];
+                var config = {};
+                var item;
+                if(data.length > 0){
+                    config = JSON.parse(data);
+                    console.log(config);
+
+                    // 未使用的Bucket: 未添加syncdir 并且 empty为空的
+                    config.bucket_syncdir_map.forEach((e) => {
+                        item = {};
+                        if(e.syncdir_path == '' && e.empty == '1'){
+                            item.name = e.bucket;
+                            unusedBucket.push(item);
+                        }
+                    });
+
+                    callBack(unusedBucket);
                 }else{
                     // 配置错误
                 }

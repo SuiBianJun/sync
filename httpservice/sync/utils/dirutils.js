@@ -216,6 +216,40 @@ DirUtil.prototype = {
             });
         }
     },
+    deleteSyncDir(token, dir, callBack){
+        var userName = this.getUserNameByToken(token);
+        var client;
+        if(userName == ''){
+            // 该用户不存在
+        }else{
+            // 写配置到用户配置文件
+            var result = fs.readFileSync(path.resolve(__dirname, configDir + userName + "/client/client.json"), {encoding: 'utf-8'});
+            client = JSON.parse(result);
+
+            var index = 0;
+            var flag = false;
+            client.client.forEach((e, i) => {
+                if(e.local_path == dir){
+                    index = i;
+                    flag = true;
+                    return;
+                }
+            });
+            if(flag){
+                client.client.splice(index, 1);
+                fs.writeFile(path.resolve(__dirname, configDir + userName + "/client/client.json"), JSON.stringify(client), "utf-8", (err) => {
+                    if(err){
+                        console.log(err);
+                        callBack(false);
+                    }
+                    callBack(true);
+                    console.log("用户同步文件夹添加成功");
+                });
+            }else{
+                callBack(false);
+            }
+        }
+    },
     getUserNameByToken(token){// 通过token获取用户名信息
         var result = fs.readFileSync(path.resolve(__dirname, tokenFilePath), {encoding: 'utf-8'});
         var data;
@@ -230,6 +264,33 @@ DirUtil.prototype = {
             }
         }
         return '';
+    },
+    syncDirRelateBucket(token, dir, bucket, callBack){
+        var userName = this.getUserNameByToken(token);
+        var client;
+        if(userName == ''){
+            // 该用户不存在
+        }else{
+            // 写配置到用户配置文件
+            var result = fs.readFileSync(path.resolve(__dirname, configDir + userName + "/client/client.json"), {encoding: 'utf-8'});
+            client = JSON.parse(result);
+
+            client.client.forEach(e => {
+                if(e.local_path == dir){
+                    e.bucket_name = bucket;
+                    return;
+                }
+            });
+
+            fs.writeFile(path.resolve(__dirname, configDir + userName + "/client/client.json"), JSON.stringify(client), "utf-8", (err) => {
+                if(err){
+                    console.log(err);
+                    callBack(false);
+                }
+                console.log("同步文件夹与Bucket关联成功");
+                callBack(true);
+            });
+        }
     }
 }
 
