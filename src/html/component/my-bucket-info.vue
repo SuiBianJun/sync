@@ -2,7 +2,15 @@
     <div :class="'empty-sync-dir'">
         <div v-for="item in buckets" :key="item.bucket" style="width: 350px;display: inline-block;">
             <Card :bordered="true" style="width: 350px;" >
-                <p slot="title" style="height: 35px; text-align: center;"><Button type="primary" shape="circle" style="font-weight: 600">{{item.bucket}}</Button></p>
+                <p slot="title" style="height: 35px;">
+                    <Button type="primary" shape="circle" style="font-weight: 600">{{item.bucket}}</Button>
+                    <Dropdown style="float: right; height: 35px;line-height: 35px;" :stop-propagation="sp" @on-click="deleteBucket(item.bucket)">
+                        <Icon type="ios-arrow-down"></Icon>
+                        <DropdownMenu slot="list">
+                            <DropdownItem name='delete'>删除</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                </p>
                 <ul style="list-style: none;">
                     <li>是否为空bucket: </li>
                     <li>同步文件夹路径: {{item.syncdir}}<span v-show="item.syncdir == ''" @click.stop.prevent="addSyncDir(item.bucket)" class="hover-class"><Icon type="ios-add-circle" /></span></li>
@@ -35,6 +43,15 @@
             </Select>
         </Modal>
 
+        <Modal
+            title="删除Bucket"
+            v-model="modalDeleteBucket"
+            :loading="loadingFlag"
+            @on-ok="confimDeleteBucket"
+            class-name="">
+            <p>确定删除同步文件夹：{{currentBucketName}}</p>
+        </Modal>
+
     </div>
 </template>
 
@@ -54,10 +71,30 @@ export default {
             modalAddSyncDir: false,
             selectSyncDir: '',
             syncDirList: [{name: 'E:\\syncDir'}],
+            modalDeleteBucket: false,
+            sp: true
+
         };
     },
     router,
     methods: {
+        confimDeleteBucket(){
+
+            this.doAjax('/client/bucket/delete', {
+                bucket: this.currentBucketName
+            }, 'post', () => {
+                setTimeout((data) => {
+                    this.modalDeleteBucket = false;
+                    router.push({path: '/menuclient/bucketinfo'});
+                    this.doAjax('/client/bucket/list', {}, 'get', this.showBucketInfo);
+                }, 1000);
+            });
+
+        },
+        deleteBucket(bucket){
+            this.currentBucketName = bucket;
+            this.modalDeleteBucket = true;
+        },
         handleAjaxResponse(response, callBackFun){
             // 请求错误
             if(response.status != 200){

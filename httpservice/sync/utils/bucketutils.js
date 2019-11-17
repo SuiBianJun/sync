@@ -46,6 +46,72 @@ BucketUtils.prototype = {
             });
         }
     },
+    deleteBucket(token, bucket){// 添加同步文件夹, 可添加多个同步文件夹
+        // 根据token获取用户名
+        var userName = this.getUserNameByToken(token);
+        var server;
+        if(userName == ''){
+            // 该用户不存在
+        }else{
+            // 写配置到用户配置文件
+            var result = fs.readFileSync(path.resolve(__dirname, configDir + userName + "/server/server.json"), {encoding: 'utf-8'});
+            server = JSON.parse(result);
+
+            var index = 0;
+            var flag = false;
+            server.bucket_syncdir_map.forEach((e, i) => {
+                if(e.bucket == bucket){
+                    index = i;
+                    flag = true;
+                    return;
+                }
+            });
+
+            if(flag){
+                // 删除关联文件夹中的bucket
+                if(server.bucket_syncdir_map[index].bucket != ''){
+                    console.log('delete relate syncdir');
+                    this.deleteRelateSyncDir(token, bucket);
+                }
+                server.bucket_syncdir_map.splice(index, 1);
+
+                fs.writeFile(path.resolve(__dirname, configDir + userName + "/server/server.json"), JSON.stringify(server), "utf-8", (err) => {
+                    if(err)
+                        console.log(err);
+                    console.log("服务器Bucket添加成功");
+                });
+            }
+
+        }
+    },
+    deleteRelateSyncDir(token, bucket){
+        var userName = this.getUserNameByToken(token);
+        var client;
+        if(userName == ''){
+            // 该用户不存在
+        }else{
+            // 写配置到用户配置文件
+            var result = fs.readFileSync(path.resolve(__dirname, configDir + userName + "/client/client.json"), {encoding: 'utf-8'});
+            client = JSON.parse(result);
+
+            var flag = false;
+            client.client.forEach((e, i) => {
+                if(e.bucket_name == bucket){
+                    e.bucket_name = '';
+                    flag = true;
+                    return;
+                }
+            });
+            if(flag){
+                fs.writeFile(path.resolve(__dirname, configDir + userName + "/client/client.json"), JSON.stringify(client), "utf-8", (err) => {
+                    if(err){
+                        console.log(err);
+                    }
+                    console.log("关联Bucket删除成功");
+                });
+            }
+        }
+    },
     getUserBucketInfo(token, callBack){
 
         var userName = this.getUserNameByToken(token);

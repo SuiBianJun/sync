@@ -185,6 +185,25 @@ router.post("/bucket/add", function(req, resp){// 添加同步文件夹
 
 });
 
+router.post("/bucket/delete", function(req, resp){// 添加同步文件夹
+
+    var bucket = req.body.bucket;
+    // 检查path是否可用
+
+    var token = req.header("AccessToken");
+    // 检查是否已经配置
+
+    // 添加到配置文件中
+    bucketutils.deleteBucket(token, bucket);
+
+    // 添加成功，更新MD5文件内容
+
+    resp.send(new ServerResponse().ok());
+    resp.end();
+    return;
+
+});
+
 router.get("/bucket/unusedBucket", function(req, resp){// 添加同步文件夹
 
     var token = req.header("AccessToken");

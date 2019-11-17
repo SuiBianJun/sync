@@ -23,7 +23,11 @@
                     <ul style="list-style: none;">
                         <li>是否为同步文件夹: </li>
                         <li>同步状态: </li>
-                        <li>Bucket: {{item.bucket_name}}<span v-show="item.bucket_name == ''" @click.stop.prevent="addBucket(item.local_path)" class="hover-class"><Icon type="ios-add-circle" /></span></li>
+                        <li>Bucket: {{item.bucket_name}}
+                            <span v-show="item.bucket_name == ''" @click.stop.prevent="addBucket(item.local_path)" class="hover-class">
+                                <Icon type="ios-add-circle" />
+                            </span>
+                        </li>
                     </ul>
                 </Card>
             </div>

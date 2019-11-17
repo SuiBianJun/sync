@@ -236,6 +236,11 @@ DirUtil.prototype = {
                 }
             });
             if(flag){
+                // 删除关联bucket中的同步文件夹
+                if(client.client[index].bucket_name != ''){// 存在关联bucket
+                    this.deleteRelateBucket(token, dir);
+                }
+
                 client.client.splice(index, 1);
                 fs.writeFile(path.resolve(__dirname, configDir + userName + "/client/client.json"), JSON.stringify(client), "utf-8", (err) => {
                     if(err){
@@ -247,6 +252,35 @@ DirUtil.prototype = {
                 });
             }else{
                 callBack(false);
+            }
+        }
+    },
+    deleteRelateBucket(token, dir){// 添加同步文件夹, 可添加多个同步文件夹
+        // 根据token获取用户名
+        var userName = this.getUserNameByToken(token);
+        var server;
+        if(userName == ''){
+            // 该用户不存在
+        }else{
+            // 写配置到用户配置文件
+            var result = fs.readFileSync(path.resolve(__dirname, configDir + userName + "/server/server.json"), {encoding: 'utf-8'});
+            server = JSON.parse(result);
+
+            var flag = false;
+            server.bucket_syncdir_map.forEach((e, i) => {
+                if(e.syncdir_path == dir){
+                    e.syncdir_path = '';
+                    flag = true;
+                    return;
+                }
+            });
+            // 删除关联文件夹中的bucket
+            if(flag){
+                fs.writeFile(path.resolve(__dirname, configDir + userName + "/server/server.json"), JSON.stringify(server), "utf-8", (err) => {
+                    if(err)
+                        console.log(err);
+                    console.log("关联Bucket删除成功");
+                });
             }
         }
     },
