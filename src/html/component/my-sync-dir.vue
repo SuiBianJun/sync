@@ -4,6 +4,7 @@
             <Breadcrumb>
                 <BreadcrumbItem to="/menuClient/syncdirinfo">
                     <Button type="primary" shape="circle">返回</Button>
+                    <Button type="primary" shape="circle">{{currentPath}}</Button>
                 </BreadcrumbItem>
             </Breadcrumb>
             <Card style="margin-top: 10px;">
@@ -87,7 +88,7 @@ export default {
                 return h('span', {
                     style: {
                         display: 'inline-block',
-                        width: '100%',
+                        width: '90%',
                     }
                 }, [
                     h('span', [
@@ -105,21 +106,19 @@ export default {
                         style: {
                             display: 'inline-block',
                             float: 'right',
-                            marginRight: '32px'
+                            //marginRight: '32px'
                         }
                     }, [
-                        h('Button', {
-                            props: Object.assign({}, this.buttonProps, {
-                                icon: treeInfo.buttonType,
-                            }),
+                        h('Icon', {
+                            props: {
+                                size: 22,
+                                type: treeInfo.buttonType
+                            },
                             style: {
                                 marginRight: '8px'
                             },
-                            attrs: {
-                                title: treeInfo.buttonTitle,
-                            },
                             on: {
-                                click: () => { this.getTreeButtonOnFunction(fileInfo)(root, node, data) }
+                                click: () => {}
                             }
                         })
                     ])
@@ -215,7 +214,7 @@ export default {
                 return h('span', {
                     style: {
                         display: 'inline-block',
-                        width: '100%',
+                        width: '90%',
                     }
                 }, [
                     h('span', [
@@ -257,6 +256,18 @@ export default {
         handleAjaxResponse(response, callBackFun){
             // 请求错误
             if(response.status != 200){
+
+                callBackFun({
+                    data: {
+                        dirs: [
+                            {
+                                name: "a.txt",
+                                sync_state: 'upload'
+                            }
+                        ]
+                    }
+                });
+
                 this.error("我的同步文件夹获取提示", "网络连接错误");
                 return;
             }
@@ -322,7 +333,7 @@ export default {
         if(store.state.currentSyncDirPath == ''){
             return;
         }
-        //this.currentPath = this.$router.params.path;
+        this.currentPath = store.state.currentSyncDirPath;
         this.doAjax('/client/syncdir/content', {path: store.state.currentSyncDirPath}, 'get', this.showSyncDir);
         
     },

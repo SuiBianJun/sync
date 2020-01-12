@@ -7,11 +7,13 @@ var tokenFilePath = '../database/token.json';// token 文件路径
 var configDir = '../config/';// 应用配置目录
 
 var dirData = [];// 同步文件json夹数
-var dirMD5Data = [];// 同步文件夹所有文件的MD5数据 
+var dirMD5Data = [];// 同步文件夹所有文件的MD5数据
+var stringRandom = require('string-random');
+
 
 var DirUtil = function(){
     
-}
+};
 
 DirUtil.prototype = {
     createUserConfigDir(accessKeyId){// 创建用户目录
@@ -54,6 +56,11 @@ DirUtil.prototype = {
                             console.log(err);
                         console.log("服务器配置文件创建成功");
                     });
+                });
+                fs.mkdir(path.resolve(__dirname, configDir + accessKeyId + "/md5/"), {recursive: true}, (err) => {
+                    if(err)
+                        console.log(err);
+                    console.log("MD5文件夹创建成功");
                 });
             }
         });
@@ -126,7 +133,7 @@ DirUtil.prototype = {
         //     ]
         // };
         //var tmpPath = "E:\\vscode_workspace\\html";
-        var tmpPath = "E:\\syncDir";
+        //var tmpPath = "E:\\syncDir";
         dirData = [];
         this.parseDir(path, dirData);
         //console.log(dirData);
@@ -136,7 +143,7 @@ DirUtil.prototype = {
             dirs: dirData
         };
     },
-    parseDir(path, tempData){// 解析指定文件夹下的所有文件为json
+    parseDir(path, tempData){// 解析指定文件夹下的所有文件结构为json结构
         var item = {};
         var files = fs.readdirSync(path, {withFileTypes: true});// 同步方式读取文件夹
         for(var i = 0; i < files.length; i++){
@@ -158,7 +165,7 @@ DirUtil.prototype = {
             }
         }
     },
-    computeDirMD5(path, tempData, root){// 计算文件夹下的所有文件的MD5值
+    computeDirMD5(path, tempData, root){// 计算文件夹下的所有文件的MD5值,列表形式
         var item = {};
         var tempPath;
         var files = fs.readdirSync(path, {withFileTypes: true});// 同步方式读取文件夹
@@ -202,10 +209,35 @@ DirUtil.prototype = {
             client = JSON.parse(result);
 
             var item = {};
-            item.local_path = syncpath;
+            item.local_path = syncpath;// 使用完整路径方便其他地方直接使用
             item.bucket_name = '';
             item.synced = '0';
-            item.md5_path = '';
+            item.md5_path = '';// 使用完整路径方便其他地方直接使用
+
+            // 生成MD5文件名
+            var md5_file_name = this.randomString(16);
+            item.md5_path = configDir + userName + "/md5/" + md5_file_name + ".json";
+
+            //第一次创建时为空
+            var md5_content = {
+                sync_dir: syncpath,
+                md5_list: [],
+                md5_json: [],
+                create_time: new Date()
+            };
+
+            // 第一次获取同步文件夹MD5信息
+            md5_content.md5_list = this.getSyncDirMD5Info(item.local_path);
+            var syncDirJsonData = [];
+            this.parseDir(item.local_path, syncDirJsonData);
+            md5_content.md5_json = syncDirJsonData;
+
+            // 创建md5文件
+            fs.writeFile(path.resolve(__dirname, configDir + userName + "/md5/" + md5_file_name), JSON.stringify(md5_content), "utf-8", (err) => {
+                if(err)
+                    console.log(err);
+                console.log("同步文件夹：" + syncpath + " md5文件文件创建成功");
+            });
 
             client.client.push(item);
 
@@ -215,6 +247,14 @@ DirUtil.prototype = {
                 console.log("用户同步文件夹添加成功");
             });
         }
+    },
+    getSyncDirMD5Info(syncDirPath){
+        var md5Data = [];
+        this.computeDirMD5(syncDirPath, md5Data, syncDirPath);
+        return md5Data;
+    },
+    randomString(length){
+        return stringRandom(length, {numbers: false});
     },
     deleteSyncDir(token, dir, callBack){
         var userName = this.getUserNameByToken(token);
@@ -331,6 +371,6 @@ DirUtil.prototype = {
 //new DirUtil().createUserConfigDir("test");
 //console.log(new DirUtil().parseSyncDir(""));
 //console.log(new DirUtil().checkDirAvailable("a"));
-//new DirUtil().computeDirMD5('e:\\syncDir', dirMD5Data, 'e:\\syncDir');
+//new DirUtil().computeDirMD5('E:\\project_test\\syncDir', dirMD5Data, 'E:\\project_test\\syncDir');
 //console.log(dirMD5Data);
 module.exports = new DirUtil()

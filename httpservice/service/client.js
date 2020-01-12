@@ -17,12 +17,11 @@ router.get("/syncdir/list", function(req, resp){// 列出用户同步文件夹�
         resp.send(new ServerResponse().ok(data));
         resp.end();
         return;
-    })
-    // 登录成功，创建对应用户Id的配置文件夹
+    });
 
 });
 
-router.get("/syncdir/content", function(req, resp){// 列出用户同步文件夹内容
+router.get("/syncdir/content", function(req, resp){// 列出用户当前选择的同步文件夹内容
 
     var path = req.query.path;
     console.log("path: " + path);
@@ -36,8 +35,8 @@ router.get("/syncdir/content", function(req, resp){// 列出用户同步文件�
 router.post("/syncdir/add", function(req, resp){// 添加同步文件夹
 
     var path = req.body.path;
-    // 检查path是否可用
 
+    // 检查path是否可用，限制文件夹的递归层数
     if(!dirutils.checkDirAvailable(path)){
         console.log("invalid path");
         resp.send(new ServerResponse().failed(null, "无效的同步文件夹，请重新配置"));
@@ -49,7 +48,6 @@ router.post("/syncdir/add", function(req, resp){// 添加同步文件夹
     // 检查是否已经配置
 
     // 添加到配置文件中
-
     dirutils.addSyncDir(token, path);
 
     // 添加成功，更新MD5文件内容
@@ -60,7 +58,7 @@ router.post("/syncdir/add", function(req, resp){// 添加同步文件夹
 
 });
 
-router.post("/syncdir/delete", function(req, resp){// 添加同步文件夹
+router.post("/syncdir/delete", function(req, resp){// 删除同步文件夹
 
     var dir = req.body.dir;
     // 检查path是否可用
@@ -161,7 +159,7 @@ router.get("/bucket/list", function(req, resp){// 列出用户同步文件夹，
         resp.send(new ServerResponse().ok(data));
         resp.end();
         return;
-    })
+    });
     // 登录成功，创建对应用户Id的配置文件夹
 
 });
