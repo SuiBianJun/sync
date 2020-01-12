@@ -23,11 +23,18 @@ router.get("/syncdir/list", function(req, resp){// 列出用户同步文件夹�
 
 router.get("/syncdir/content", function(req, resp){// 列出用户当前选择的同步文件夹内容
 
+    // 检查目录合法性，否则可能泄露系统文件目录结构
     var path = req.query.path;
     console.log("path: " + path);
-    var data = dirutils.parseSyncDir(path);
-    console.log(data);
-    resp.send(new ServerResponse().ok(data));
+    // 当前同步目录的内容json结构
+    var syncDirJsonData = dirutils.parseSyncDir(req.header("AccessToken"), path);
+    console.log(syncDirJsonData);
+    // 当前同步目录列表结构
+    var syncDirListData = dirutils.getSyncDirMD5Info(path);
+
+    // 把当前同步目录结构内容和前一次的目录结构进行对比
+
+    resp.send(new ServerResponse().ok(syncDirJsonData));
     resp.end();
 
 });

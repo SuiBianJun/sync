@@ -235,18 +235,16 @@ export default {
                             marginRight: '32px'
                         }
                     }, [
-                        h('Button', {
-                            props: Object.assign({}, this.buttonProps, {
-                                icon: treeInfo.buttonType,
-                            }),
+                        h('Icon', {
+                            props: {
+                                size: 22,
+                                type: treeInfo.buttonType
+                            },
                             style: {
                                 marginRight: '8px'
                             },
-                            attrs: {
-                                title: treeInfo.buttonTitle,
-                            },
                             on: {
-                                //click: () => { this.getTreeButtonOnFunction(fileInfo)(root, node, data) }
+                                click: () => {}
                             }
                         })
                     ])

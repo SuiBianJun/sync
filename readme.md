@@ -139,6 +139,15 @@
     删除bucket, 对应的同步文件夹关联的bucket置空
 
 
-15、如果未进行bucket关联，任何文件夹的修改都是不变的
+15、如果未进行bucket关联，任何文件夹的修改都是不变的，该文件夹为未同步状态
+
+16、返回给前端的目录json结构
+{
+    type: "",
+    name: "",
+    sync_state: "",// 当前文件的同步状态 upload 未上传，download 未下载，sync 等待同步到远程服务器，done 同步完成，conflict 冲突文件
+    path: "",// 文件全路径
+    dirs: []
+}
 
 
