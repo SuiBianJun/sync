@@ -27,12 +27,14 @@ router.get("/syncdir/content", function(req, resp){// 列出用户当前选择�
     var path = req.query.path;
     console.log("path: " + path);
     // 当前同步目录的内容json结构
-    var syncDirJsonData = dirutils.parseSyncDir(req.header("AccessToken"), path);
+    var syncDirJsonData = dirutils.parseSyncDir(path);
     console.log(syncDirJsonData);
     // 当前同步目录列表结构
     var syncDirListData = dirutils.getSyncDirMD5Info(path);
 
+    // ===========================================
     // 把当前同步目录结构内容和前一次的目录结构进行对比
+    // ===========================================
 
     resp.send(new ServerResponse().ok(syncDirJsonData));
     resp.end();

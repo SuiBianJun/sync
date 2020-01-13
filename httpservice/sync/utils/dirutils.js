@@ -65,7 +65,7 @@ DirUtil.prototype = {
             }
         });
     },
-    parseSyncDir(token, path){// 解析同步目录结构为json格式
+    parseSyncDir(path){// 解析同步目录结构为json格式
         // var dirData = {
         //     name: '/var/syncdir',
         //     dirs: [
@@ -134,9 +134,8 @@ DirUtil.prototype = {
         // };
         //var tmpPath = "E:\\vscode_workspace\\html";
         //var tmpPath = "E:\\syncDir";
-        var userName = this.getUserNameByToken(token);
         dirData = [];
-        this.parseDir(userName, path, dirData, path);
+        this.parseDir(path, dirData);
         //console.log(dirData);
         
         return {
@@ -144,7 +143,7 @@ DirUtil.prototype = {
             dirs: dirData
         };
     },
-    parseDir(userName, path, tempData, root){// 解析指定文件夹下的所有文件结构为json结构
+    parseDir(path, tempData){// 解析指定文件夹下的所有文件结构为json结构
         var item = {};
         var files = fs.readdirSync(path, {withFileTypes: true});// 同步方式读取文件夹
         for(var i = 0; i < files.length; i++){
@@ -154,14 +153,14 @@ DirUtil.prototype = {
                 item.name = files[i].name;// 文件或者文件夹名
                 item.dirs = [];// 文件夹下的文件
                 item.path = path + "\\" + files[i].name,// 文件或者文件夹路径
-                item.sync_state = this.getFileSyncStat(userName, root, path),// 文件或文件夹的同步状态
+                //item.sync_state = this.getFileSyncStat(userName, root, path),// 文件或文件夹的同步状态
                 tempData.push(item);
-                this.parseDir(userName, path + "\\" + files[i].name, tempData[i].dirs, root);
+                this.parseDir(path + "\\" + files[i].name, tempData[i].dirs);
             }else{
                 item.type = 0,
                 item.name = files[i].name;
                 item.path = path + "\\" + files[i].name,
-                item.sync_state = this.getFileSyncStat(userName, root, path),
+                //item.sync_state = this.getFileSyncStat(userName, root, path),
                 tempData.push(item);
             }
         }
@@ -176,17 +175,42 @@ DirUtil.prototype = {
 
             for(var i = 0; i < client.client.length; i++){
                 if(client.client[i].local_path == syncDirPath){
-                    if(client.client[i].bucket_name == ""){// 文件夹未设置bucket，设为上传状态
+                    if(client.client[i].synced == "0"){// 未同步过，都按待上传处理
                         return "upload";
                     }else{
-                        // 比较MD5值
+                        if(client.client[i].bucket_name == ""){// 文件夹未设置bucket，设为上传状态
+                            return "upload";
+                        }else{
+                            // 比较MD5值
+                            return this.getFileSyncStat(userName, currentFilePath, client.client[i].md5_path);
+    
+                            //return "sync";
+                        }
 
-                        return "sync";
                     }
                 }
             }
             // 同步文件夹异常
         }
+    },
+    getFileSyncStat(userName, currentFilePath, md5_path){
+
+        var md5_content = {};
+        var result = fs.readFileSync(path.resolve(__dirname, md5_path), {encoding: 'utf-8'});
+        md5Content = JSON.parse(result);
+
+        var syncDir = md5Content.sync_dir;
+
+
+        var md5Value = "";
+        var file = fs.readFileSync(currentFilePath, {withFileTypes: true});
+        if(file.isDirectory()){
+            md5Value = md5.getDir(currentFilePath);
+        }else{
+            md5Value = md5.getFile(currentFilePath);
+        }
+
+
     },
     getSyncDirSyncStat(root){
 
@@ -255,11 +279,11 @@ DirUtil.prototype = {
             // 第一次获取同步文件夹MD5信息
             md5_content.md5_list = this.getSyncDirMD5Info(item.local_path);
             var syncDirJsonData = [];
-            this.parseDir(userName, item.local_path, syncDirJsonData, item.local_path);
+            this.parseDir(item.local_path, syncDirJsonData);
             md5_content.md5_json = syncDirJsonData;
 
             // 创建md5文件
-            fs.writeFile(path.resolve(__dirname, configDir + userName + "/md5/" + md5_file_name), JSON.stringify(md5_content), "utf-8", (err) => {
+            fs.writeFile(path.resolve(__dirname, configDir + userName + "/md5/" + md5_file_name + ".json"), JSON.stringify(md5_content), "utf-8", (err) => {
                 if(err)
                     console.log(err);
                 console.log("同步文件夹：" + syncpath + " md5文件文件创建成功");
