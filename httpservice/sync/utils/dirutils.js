@@ -267,6 +267,7 @@ DirUtil.prototype = {
             // 生成MD5文件名
             var md5_file_name = this.randomString(16);
             item.md5_path = configDir + userName + "/md5/" + md5_file_name + ".json";
+            item.md5_file_name = md5_file_name;
 
             //第一次创建时为空
             var md5_content = {
@@ -318,10 +319,12 @@ DirUtil.prototype = {
 
             var index = 0;
             var flag = false;
+            var md5_file_name = "";
             client.client.forEach((e, i) => {
                 if(e.local_path == dir){
                     index = i;
                     flag = true;
+                    md5_file_name = e.md5_file_name;
                     return;
                 }
             });
@@ -339,6 +342,15 @@ DirUtil.prototype = {
                     }
                     callBack(true);
                     console.log("用户同步文件夹添加成功");
+                });
+                // 删除md5文件
+                var md5_file_path = configDir + userName + "/md5/" + md5_file_name + ".json";
+                fs.unlink(path.resolve(__dirname, md5_file_path), (err)=>{
+                    if(err){
+                        console.log("md5 文件删除失败：" + md5_file_path);
+                        return;
+                    }
+                    console.log("md5 文件已删除：" + md5_file_path);
                 });
             }else{
                 callBack(false);
